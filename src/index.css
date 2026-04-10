@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --canvas-bg: #030305;
+  --accent-indigo: #6366f1;
+  --accent-violet: #a855f7;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--canvas-bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.app-main {
+  width: 100vw;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Navigation */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.5rem 5%;
+  z-index: 100;
+}
+
+.nav-logo {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: 0.15em;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  gap: 3rem;
+}
+
+.nav-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: white;
+}
+
+.nav-cta {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.8rem 1.8rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.nav-cta:hover {
+  background: white;
+  color: black;
+}
+
+/* Layout Core */
+.scroll-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0 10%;
+  z-index: 10;
+}
+
+.content-wrapper {
+  max-width: 650px;
+  position: relative;
+}
+
+.hero-content h1 {
+  font-size: clamp(4rem, 8vw, 7rem);
+  font-weight: 900;
+  line-height: 0.9;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(to bottom, #fff 40%, rgba(255,255,255,0.4));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subheadline {
+  font-weight: 700;
+  color: var(--accent-indigo);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  display: block;
+}
+
+.body-text {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.pinned-content {
+  position: absolute;
+  top: 0;
+  transition: opacity 0.5s ease;
+}
+
+.key-message {
+  margin-top: 3.5rem;
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1.4;
+  border-left: 3px solid var(--accent-violet);
+  padding-left: 2rem;
+  color: white;
+}
+
+/* Multimedia Sections */
+.video-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 10%;
+  background: black;
+  overflow: hidden;
+}
+
+.video-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw;
+  min-height: 100vh;
+  min-width: 177.77vh;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.video-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(3,3,5,0.8) 0%, rgba(3,3,5,0) 70%);
+  z-index: 1;
+}
+
+.section-title-alt {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  position: relative;
+  z-index: 2;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+}
+
+.benefit-icon {
+  width: 10px;
+  height: 10px;
+  background: var(--accent-indigo);
+  border-radius: 2px;
+  box-shadow: 0 0 15px var(--accent-indigo);
+  flex-shrink: 0;
+}
+
+/* Contact / Abschluss */
+.contact-section {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+.cta-button {
+  background: linear-gradient(135deg, var(--accent-indigo) 0%, var(--accent-violet) 100%);
+  color: white;
+  border: none;
+  padding: 1.2rem 3.5rem;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: 0 15px 35px rgba(99, 102, 241, 0.25);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  margin-top: 1rem;
+}
+
+.cta-button:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 45px rgba(99, 102, 241, 0.45);
+}
+
+@media (max-width: 768px) {
+  .navbar { padding: 1.5rem 5%; }
+  .nav-links { display: none; }
+  .hero-content h1 { font-size: 3.5rem; }
+  .scroll-section { padding: 0 5%; }
+}
