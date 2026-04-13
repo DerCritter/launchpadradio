@@ -566,7 +566,6 @@ const ScrollContent = () => {
   const gridRef = useRef<HTMLDivElement>(null!);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const videoCardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const contactPinRef = useRef<HTMLElement>(null!);
 
   useFrame(() => {
     if (!pinRef.current || !pinRef2.current || !pinRef3.current || !gridRef.current) return;
@@ -584,12 +583,6 @@ const ScrollContent = () => {
     const pinVal2 = MathUtils.clamp(p - 5, 0, 2) * 100;
     const opacity2 = MathUtils.clamp((p - 5) / 0.5, 0, 1) * (1 - MathUtils.clamp((p - 7.2) / 0.5, 0, 1));
     pinRef2.current.style.transform = `translateY(${pinVal2}vh)`;
-    
-    // Contact Section Pin (p=18.5 to 20.5)
-    if (contactPinRef.current) {
-      const pinValC = MathUtils.clamp(p - 18.5, 0, 2) * 100;
-      contactPinRef.current.style.transform = `translateY(${pinValC}vh)`;
-    }
     pinRef2.current.style.opacity = `${opacity2}`;
     pinRef2.current.style.pointerEvents = p > 7.5 || p < 4.8 ? 'none' : 'auto';
 
@@ -749,7 +742,7 @@ const ScrollContent = () => {
       </section>
 
       {/* 6. Contact: 100vh, p=17 */}
-      <section className="scroll-section contact-section" ref={contactPinRef}>
+      <section className="scroll-section contact-section">
         <div className="contact-grid"></div>
         <CrypticDataStream />
         <CrypticDataStream alignRight />
@@ -762,7 +755,7 @@ const ScrollContent = () => {
         </div>
       </section>
 
-      <div style={{ height: '300vh' }} />
+      <div style={{ height: '100vh' }} />
     </Scroll>
   );
 };
@@ -793,7 +786,7 @@ const Visualizer3D: React.FC = () => {
   return (
     <div className="visualizer-container">
       <Canvas shadows camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 2]}>
-        <ScrollControls pages={23} damping={0.1}>
+        <ScrollControls pages={21} damping={0.1}>
           <Scene />
           <ScrollContent />
           <ContactShadows 
