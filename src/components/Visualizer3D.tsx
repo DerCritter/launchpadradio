@@ -1,8 +1,34 @@
-import React, { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { ScrollControls, useScroll, Scroll, ContactShadows, useTexture, useGLTF, Environment, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 import { MathUtils } from 'three';
+
+const CrypticDataStream = ({ alignRight = false }: { alignRight?: boolean }) => {
+  const [lines, setLines] = useState<string[]>([]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const hex = Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, '0').toUpperCase();
+      const mem = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+      
+      setLines(prev => {
+        const next = [...prev, `SYS_MEM[${mem}] 0x${hex} ... OK`];
+        if (next.length > 20) next.shift();
+        return next;
+      });
+    }, 150);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className={`cryptic-stream ${alignRight ? 'cryptic-stream-right' : ''}`}>
+      {lines.map((line, i) => (
+        <div key={i}>{line}</div>
+      ))}
+    </div>
+  );
+};
 
 const Avatar = ({ position }: { position: [number, number, number] }) => {
   const { scene, animations } = useGLTF('/avatar_2.glb');
@@ -70,7 +96,7 @@ const Avatar = ({ position }: { position: [number, number, number] }) => {
   useFrame(() => {
     if (!avatarRef.current) return;
     const t = scroll.offset;
-    const p = t * 15;
+    const p = t * 17;
     
     // Synced with Section 3 Pinned: starts at p=5.0 (shifted from 4.0)
     // It fades out exactly when the iPhone fades out (p=7.0)
@@ -160,24 +186,26 @@ const AnimatedCube = () => {
     if (!groupRef.current) return;
 
     const t = scroll.offset;
-    const p = t * 15; 
+    const p = t * 20; 
 
     // Transition stages mapped to pages
-    const s1 = MathUtils.clamp((p - 1.0) / 1.5, 0, 1);
-    const s2 = MathUtils.clamp((p - 2.5) / 1.5, 0, 1);
+    // s1: Initial emergence zoom (starts p=0.3, duration 1.0)
+    const s1 = MathUtils.clamp((p - 0.3) / 1.0, 0, 1);
+    // s2: Shrink into Phone (syncs perfectly with phone movement p=2.0 to 4.5)
+    const s2 = MathUtils.clamp((p - 2.0) / 2.5, 0, 1);
     
     // NEW Sequence Transitions
     const s_spin1 = MathUtils.clamp((p - 5.0) / 1.5, 0, 1);  // Avatar spin (starts p=5)
     const s_iso = MathUtils.clamp((p - 7.5) / 1.0, 0, 1);    // 45-deg isometric tilt
-    const s_spin2 = MathUtils.clamp((p - 8.5) / 4.5, 0, 1);  // Long spin during Section 4
+    const s_endgame_spin = MathUtils.clamp((p - 8.5) / 7.5, 0, 1); // Continuous spin p=8.5 to 16.0
     
-    // Extended lifecycle: starts fading out at p = 14.0
-    const visibilityScale = MathUtils.clamp((15.0 - p) / 0.5, 0, 1);
+    // Lifecycle: starts fading out immediately after Section 4 (ends p=16)
+    const visibilityScale = MathUtils.clamp((16.5 - p) / 0.5, 0, 1);
 
     // Scaling logic: Shrink to fit inside the phone screen
-    const baseScale = p < 2.5 
-      ? MathUtils.lerp(0.1, 1.2, s1) 
-      : MathUtils.lerp(1.2, 0.22, s2); // Dramatic shrink to fix inside iPhone screen
+    const baseScale = p < 2.0 
+      ? MathUtils.lerp(0.1, 0.85, s1) 
+      : MathUtils.lerp(0.85, 0.22, s2); // Dramatic shrink to fix inside iPhone screen
     
     groupRef.current.scale.setScalar(baseScale * visibilityScale);
     
@@ -200,15 +228,15 @@ const AnimatedCube = () => {
     // Isometric view requires a 45-degree angle in Y to corner it properly
     const rotYIso = MathUtils.lerp(0, Math.PI * 0.25, s_iso); 
     const rotYSpin1 = MathUtils.lerp(0, 2 * Math.PI, s_spin1);
-    const rotYSpin2 = MathUtils.lerp(0, 2 * Math.PI, s_spin2);
-    groupRef.current.rotation.y = rotY1 + rotY2 + rotYSpin1 + rotYIso + rotYSpin2;
+    const rotYEndgame = MathUtils.lerp(0, 4 * Math.PI, s_endgame_spin); // Two full 360-turns continuously
+    groupRef.current.rotation.y = rotY1 + rotY2 + rotYSpin1 + rotYIso + rotYEndgame;
 
     // Quad Cross-fade logic (Evolution stages)
-    // 1. Immblend -> Finx (starts p=4.5)
-    const s_fuse1 = MathUtils.clamp((p - 4.5) / 1.0, 0, 1);
+    // 1. Immblend -> Finx (starts early at p=4.0 for seamless overlap)
+    const s_fuse1 = MathUtils.clamp((p - 4.0) / 1.0, 0, 1);
     // 2. Finx -> Fes (starts p=8.0)
     const s_fuse2 = MathUtils.clamp((p - 8.0) / 1.0, 0, 1);
-    // 3. Fes -> Ulm (starts p=11.5)
+    // 3. Fes -> Ulm (starts p=11.5 - identical transition style as before)
     const s_fuse3 = MathUtils.clamp((p - 11.5) / 1.0, 0, 1);
     
     // O(1) Fast Material Opacity Updates preventing lag 
@@ -241,6 +269,57 @@ const AnimatedCube = () => {
       {/* 0.01 micro-offset is enough with polygonOffset to prevent Z-fighting */}
       <Avatar position={[0, topY + 0.01, 0]} />
       <Home position={[0, topY + 0.01, 0]} />
+      <FloatingIcons topY={topY} />
+    </group>
+  );
+};
+
+// Floating Icons Component for Section 4 (Ulm Stage)
+const FloatingIcons = ({ topY }: { topY: number }) => {
+  const { scene } = useGLTF('/icons_float.glb');
+  const groupRef = useRef<THREE.Group>(null!);
+  const scroll = useScroll();
+
+  useEffect(() => {
+    scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        mesh.castShadow = true;
+        mesh.receiveShadow = false;
+        if (mesh.material) {
+          const mat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
+          mat.transparent = true;
+          mat.roughness = 0.1;
+          mat.metalness = 0.9;
+          // Removed lilac emissive to show natural model colors
+          mat.emissive = new THREE.Color("#000000"); 
+          mat.emissiveIntensity = 0;
+        }
+      }
+    });
+  }, [scene]);
+
+  useFrame((state) => {
+    if (!groupRef.current) return;
+    const t = scroll.offset;
+    const p = t * 20;
+    
+    // Appear with Ulm (s_fuse3 sync: starts p=11.5)
+    const s_appear = MathUtils.clamp((p - 11.5) / 1.0, 0, 1);
+    const fadeOut = 1 - MathUtils.clamp((p - 16.0) / 0.5, 0, 1);
+    
+    const finalScale = s_appear * fadeOut;
+    groupRef.current.scale.setScalar(finalScale);
+    groupRef.current.visible = finalScale > 0.001;
+
+    // Gentle oscillation logic - Increased height offset to +0.40
+    const time = state.clock.getElapsedTime();
+    groupRef.current.position.y = topY + 0.40 + Math.sin(time * 2) * 0.05;
+  });
+
+  return (
+    <group ref={groupRef}>
+      <primitive object={scene} />
     </group>
   );
 };
@@ -283,14 +362,14 @@ const Home = ({ position }: { position: [number, number, number] }) => {
   useFrame(() => {
     if (!groupRef.current) return;
     const t = scroll.offset;
-    const p = t * 15;
+    const p = t * 20;
     
     // Sync appearance with the Isometric transition (starting p=7.5)
     // Appear when Cube begins tilt
     const appearScale = MathUtils.clamp((p - 7.5) / 0.8, 0, 1);
     
-    // Extended lifecycle: starts fading out at p = 14.0
-    const visibilityScale = MathUtils.clamp((15.0 - p) / 0.5, 0, 1);
+    // Extended lifecycle: starts fading out when Ulm/Icons appear (p = 11.5)
+    const visibilityScale = MathUtils.clamp((12.5 - p) / 1.0, 0, 1);
     
     const scale = 0.1 * appearScale * visibilityScale; 
     groupRef.current.scale.setScalar(scale);
@@ -308,6 +387,7 @@ useGLTF.preload('/cube_immblend.glb');
 useGLTF.preload('/cube_finx_2.glb');
 useGLTF.preload('/cube_fes.glb');
 useGLTF.preload('/cube_ulm.glb');
+useGLTF.preload('/icons_float.glb');
 useGLTF.preload('/avatar_2.glb');
 useGLTF.preload('/home_1.glb');
 
@@ -319,7 +399,7 @@ const ScanLine = () => {
   useFrame(() => {
     if (!groupRef.current) return;
     const t = scroll.offset;
-    const p = t * 15;
+    const p = t * 20;
     
     // Scan triggers when the phone is settled (p > 4.4) and stops exactly when avatar STARTS spawning (p = 5.0)
     const isActive = p > 4.4 && p < 5.0;
@@ -383,7 +463,7 @@ const IphonePerspective = () => {
   useFrame(() => {
     if (!groupRef.current) return;
     const t = scroll.offset;
-    const p = t * 15;
+    const p = t * 20;
     const s_total = MathUtils.clamp((p - 2.0) / 2.5, 0, 1);
     
     // Visibility: disappear after Avatar spins (p=7.0)
@@ -437,13 +517,15 @@ const FloatingCubes = ({ count = 80 }) => {
 
   useFrame((state) => {
     const t = scroll.offset;
-    const p = t * 15;
-    // Fade in cubes as we transition to Contact section
-    const intensity = MathUtils.clamp((p - 9.5) / 1.0, 0, 1);
+    const p = t * 20;
+    // Fade in cubes exactly when Section 4 starts (p=8.5)
+    // they stay until the end of the site (p=20)
+    const intensity = MathUtils.clamp((p - 8.5) / 0.5, 0, 1);
     
     cubeData.forEach((pData: { x: number, y: number, z: number, speed: number, rotSpeed: number }, i: number) => {
-      const scrollOffset = MathUtils.clamp((p - 9.5) / 1.5, 0, 1);
-      // Project move towards camera
+      // Linear motion based on p, starting from Section 4's reveal
+      const scrollOffset = MathUtils.clamp((p - 8.5) / 11.5, 0, 1);
+      // Project move towards camera over the entire Section 4 range (8.5 to 16.0)
       const currentZ = pData.z + (scrollOffset * 40 * pData.speed);
       
       dummy.position.set(pData.x, pData.y, currentZ);
@@ -481,11 +563,15 @@ const ScrollContent = () => {
   const pinRef = useRef<HTMLDivElement>(null!);
   const pinRef2 = useRef<HTMLDivElement>(null!);
   const pinRef3 = useRef<HTMLDivElement>(null!);
+  const gridRef = useRef<HTMLDivElement>(null!);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const videoCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const contactPinRef = useRef<HTMLElement>(null!);
 
   useFrame(() => {
-    if (!pinRef.current || !pinRef2.current || !pinRef3.current) return;
+    if (!pinRef.current || !pinRef2.current || !pinRef3.current || !gridRef.current) return;
     const t = scroll.offset;
-    const p = t * 15;
+    const p = t * 20;
     
     // Section 2: Philosophy (p=2 to 4)
     const pinVal1 = MathUtils.clamp(p - 2, 0, 2) * 100;
@@ -498,15 +584,51 @@ const ScrollContent = () => {
     const pinVal2 = MathUtils.clamp(p - 5, 0, 2) * 100;
     const opacity2 = MathUtils.clamp((p - 5) / 0.5, 0, 1) * (1 - MathUtils.clamp((p - 7.2) / 0.5, 0, 1));
     pinRef2.current.style.transform = `translateY(${pinVal2}vh)`;
+    
+    // Contact Section Pin (p=18.5 to 20.5)
+    if (contactPinRef.current) {
+      const pinValC = MathUtils.clamp(p - 18.5, 0, 2) * 100;
+      contactPinRef.current.style.transform = `translateY(${pinValC}vh)`;
+    }
     pinRef2.current.style.opacity = `${opacity2}`;
     pinRef2.current.style.pointerEvents = p > 7.5 || p < 4.8 ? 'none' : 'auto';
 
-    // Section 4: Anwendungen (p=8.5 to 13.5)
-    const pinVal3 = MathUtils.clamp(p - 8.5, 0, 5) * 100;
-    const opacity3 = MathUtils.clamp((p - 8.5) / 0.5, 0, 1) * (1 - MathUtils.clamp((p - 14.5) / 0.5, 0, 1));
+    // Section 4: Anwendungen (p=8.5 to 16.0 - Extended for Ulm reveal)
+    const pinVal3 = MathUtils.clamp(p - 8.5, 0, 7.5) * 100;
+    const opacity3 = MathUtils.clamp((p - 8.5) / 0.5, 0, 1) * (1 - MathUtils.clamp((p - 16.5) / 0.5, 0, 1));
     pinRef3.current.style.transform = `translateY(${pinVal3}vh)`;
     pinRef3.current.style.opacity = `${opacity3}`;
-    pinRef3.current.style.pointerEvents = p > 14.5 || p < 8.2 ? 'none' : 'auto';
+    pinRef3.current.style.pointerEvents = p > 17.0 || p < 8.2 ? 'none' : 'auto';
+    
+    // Tech grid sync
+    gridRef.current.style.transform = `translateY(${pinVal3}vh)`;
+    gridRef.current.style.opacity = `${opacity3}`;
+
+    // Highlight HUD cards sequentially based on the p=8.5 to 16.0 timeframe
+    const cardProgress = MathUtils.clamp((p - 8.5) / 7.5, 0, 0.99);
+    const activeIndex = Math.floor(cardProgress * 4);
+    cardRefs.current.forEach((el, index) => {
+      if (el) {
+        if (index === activeIndex) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      }
+    });
+
+    // Highlight Video cards sequentially (p=17.2 to 18.2)
+    const videoProgress = MathUtils.clamp((p - 17.2) / 1.0, 0, 0.99);
+    const activeVideoIndex = Math.floor(videoProgress * 3); // 3 items
+    videoCardRefs.current.forEach((el, index) => {
+      if (el) {
+        if (index === activeVideoIndex) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      }
+    });
   });
 
   return (
@@ -556,32 +678,43 @@ const ScrollContent = () => {
 
       {/* 4. Anwendung: 100vh, p=8.5 */}
       <div className="scroll-section">
-        <div ref={pinRef3} className="content-wrapper pinned-content pinned-right">
-          <h2>Anwendungsmöglichkeiten</h2>
-          <div className="applications-grid">
-            <div className="application-card">
+        {/* Tecnological Background Grid */}
+        <div ref={gridRef} className="tech-grid pinned-content" />
+
+        <div ref={pinRef3} className="content-wrapper pinned-content hud-pinned-right">
+          <div className="hud-header">
+            <h2>Anwendungsmöglichkeiten</h2>
+            <div className="hud-line"></div>
+          </div>
+          <div className="hud-cards">
+            <div className="hud-card" ref={el => cardRefs.current[0] = el}>
+              <div className="hud-node"></div>
               <h3>Beratung</h3>
               <p>Physische Anker für komplexe technische Erklärungen.</p>
             </div>
-            <div className="application-card">
+            <div className="hud-card" ref={el => cardRefs.current[1] = el}>
+              <div className="hud-node"></div>
               <h3>Marketing</h3>
               <p>Interaktive Social Media Kampagnen mit AR-Veredelung.</p>
             </div>
-            <div className="application-card">
+            <div className="hud-card" ref={el => cardRefs.current[2] = el}>
+              <div className="hud-node"></div>
               <h3>Print</h3>
               <p>Verwandeln Sie Flyer und Visitenkarten in digitale Erlebnisse.</p>
             </div>
-            <div className="application-card">
+            <div className="hud-card" ref={el => cardRefs.current[3] = el}>
+              <div className="hud-node"></div>
               <h3>Events</h3>
               <p>Unvergessliche Schnitzeljagden und Führungen direkt vor Ort.</p>
             </div>
           </div>
         </div>
       </div>
-      {/* 4. Pin Spacer: 450vh (tailored), p=8.5 to 13 */}
-      <div style={{ height: '450vh' }} />
+      {/* 4. Pin Spacer: 750vh (Endgame rotation sequence), p=8.5 to 16 */}
+      <div style={{ height: '750vh' }} />
 
-      {/* 5. Video: 100vh, p=14 */}
+      {/* 5. Video: 100vh, p=16.5 */}
+      <div style={{ height: '50vh' }} />
       <section className="video-section">
         <iframe 
           src="https://player.vimeo.com/video/1181282543?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
@@ -593,19 +726,19 @@ const ScrollContent = () => {
         <div className="content-wrapper" style={{ zIndex: 2 }}>
           <h2 className="section-title-alt">Highlights: Warum AR Würfel?</h2>
           <div className="benefits-list">
-            <div className="benefit-item">
+            <div className="benefit-item" ref={el => videoCardRefs.current[0] = el}>
               <div className="benefit-text">
                 <h4>Echtes erleben.</h4>
                 <p>Interaktion statt bloßer Erklärung.</p>
               </div>
             </div>
-            <div className="benefit-item">
+            <div className="benefit-item" ref={el => videoCardRefs.current[1] = el}>
               <div className="benefit-text">
                 <h4>Fokussierte Aufmerksamkeit.</h4>
                 <p>Neugier als treibende Kraft.</p>
               </div>
             </div>
-            <div className="benefit-item">
+            <div className="benefit-item" ref={el => videoCardRefs.current[2] = el}>
               <div className="benefit-text">
                 <h4>Perfekt integriert.</h4>
                 <p>Nahtlos in Ihrer Customer Journey.</p>
@@ -615,10 +748,13 @@ const ScrollContent = () => {
         </div>
       </section>
 
-      {/* 6. Contact: 100vh, p=15 */}
-      <section className="scroll-section contact-section">
+      {/* 6. Contact: 100vh, p=17 */}
+      <section className="scroll-section contact-section" ref={contactPinRef}>
+        <div className="contact-grid"></div>
+        <CrypticDataStream />
+        <CrypticDataStream alignRight />
         <div className="content-wrapper">
-          <span className="subheadline">Bereit für die nächste Dimension?</span>
+          <span className="subheadline">Bereit für die próxima Dimension?</span>
           <h2>Der Würfel als innovativer Einstiegspunkt in Ihre digitale Welt.</h2>
           <button className="cta-button">
             Jetzt erleben o Demo anfragen
@@ -626,7 +762,7 @@ const ScrollContent = () => {
         </div>
       </section>
 
-      <div style={{ height: '100vh' }} />
+      <div style={{ height: '300vh' }} />
     </Scroll>
   );
 };
@@ -657,7 +793,7 @@ const Visualizer3D: React.FC = () => {
   return (
     <div className="visualizer-container">
       <Canvas shadows camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 2]}>
-        <ScrollControls pages={16} damping={0.1}>
+        <ScrollControls pages={23} damping={0.1}>
           <Scene />
           <ScrollContent />
           <ContactShadows 
