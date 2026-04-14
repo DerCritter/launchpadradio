@@ -318,9 +318,9 @@ const FloatingIcons = ({ topY }: { topY: number }) => {
     groupRef.current.scale.setScalar(finalScale);
     groupRef.current.visible = finalScale > 0.001;
 
-    // Gentle oscillation logic - Increased height offset to +0.40
+    // More dynamic oscillation logic - Increased height offset to +0.85 and amplitude to 0.18
     const time = state.clock.getElapsedTime();
-    groupRef.current.position.y = topY + 0.40 + Math.sin(time * 2) * 0.05;
+    groupRef.current.position.y = topY + 0.85 + Math.sin(time * 2.5) * 0.18;
   });
 
   return (
