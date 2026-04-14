@@ -542,16 +542,18 @@ const FloatingCubes = ({ count = 80 }) => {
     cubeData.forEach((pData: { x: number, y: number, z: number, speed: number, rotSpeed: number }, i: number) => {
       // Linear motion based on p, starting from Section 4's reveal
       const scrollOffset = MathUtils.clamp((p - 8.5) / 11.5, 0, 1);
-      // Project move towards camera over the entire Section 4 range (8.5 to 16.0)
       const currentZ = pData.z + (scrollOffset * 40 * pData.speed);
       
-      dummy.position.set(pData.x, pData.y, currentZ);
+      // Add noticeable vertical oscillation (hover effect)
+      const oscillation = Math.sin(state.clock.elapsedTime * pData.speed) * 0.8;
+      
+      dummy.position.set(pData.x, pData.y + 3.5 + oscillation, currentZ); // Raised + oscillation
       dummy.rotation.set(
-        state.clock.elapsedTime * pData.rotSpeed,
-        state.clock.elapsedTime * pData.rotSpeed * 1.5,
-        state.clock.elapsedTime * pData.rotSpeed * 0.5
+        state.clock.elapsedTime * pData.rotSpeed * 2,
+        state.clock.elapsedTime * pData.rotSpeed * 2.5,
+        state.clock.elapsedTime * pData.rotSpeed * 1.5
       );
-      dummy.scale.setScalar(intensity * 0.25);
+      dummy.scale.setScalar(intensity * 0.3);
       
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
