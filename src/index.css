@@ -523,25 +523,75 @@ h1, h2, h3 {
 }
 
 .video-section .benefit-item {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: none;
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(25px) saturate(200%);
+  padding: 2.2rem 2.8rem;
+  max-width: 650px;
+  position: relative;
+  overflow: hidden; /* For the shine sweep */
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.video-section .benefit-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--accent-violet);
+  box-shadow: 0 0 20px var(--accent-violet);
+  opacity: 0.6;
+}
+
+.video-section .benefit-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: 0.8s;
+  pointer-events: none;
+}
+
+.video-section .benefit-item:hover::after {
+  left: 150%;
 }
 
 .video-section .benefit-item:hover, .video-section .benefit-item.active {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateX(15px); /* Lateral hover for desktop */
-  box-shadow: -10px 10px 30px rgba(139, 92, 246, 0.15);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateX(20px) scale(1.02);
+  box-shadow: -20px 20px 60px rgba(139, 92, 246, 0.2);
+}
+
+.video-section .benefit-item:hover::before {
+  opacity: 1;
+  width: 6px;
 }
 
 .video-section .benefit-text h4 {
   color: white;
+  font-size: 1.5rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
 }
 
 .video-section .benefit-text p {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.05rem;
+  line-height: 1.6;
 }
 
 .benefits-list {
@@ -1082,9 +1132,12 @@ h1, h2, h3 {
   .scroll-section { padding: 0 8%; justify-content: center; }
   
   /* Task List:
-  - [x] Implement responsive 3D scaling factor in `Visualizer3D.tsx`
-  - [x] Add fluid typography using `clamp()` for all headers and body text
-  - [x] Increase 3D icons (FloatingCubes) height and oscillation amplitude
+  - [x] Upgrade `.benefit-item` with advanced glassmorphism (blur/saturate)
+  - [x] Add `::after` flare/sweep for the light catch / 'destellos' effect
+  - [x] Add neon lilac vertical accent bars (`::before`) to each card
+  - [x] Increase base padding and scaling factor for desktop impact
+  - [ ] Verify responsive behavior and mobile clearance
+  - [x] Build and Push
   - [x] Optimize Hero Banner image zoom/size for mobile view
   - [x] Final visual verification across multiple viewport sizes
   */
