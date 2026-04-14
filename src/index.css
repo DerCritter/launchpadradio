@@ -259,7 +259,7 @@ h1, h2, h3 {
 .hud-pinned-left {
   left: clamp(1rem, 3%, 3rem) !important;
   right: auto !important;
-  bottom: clamp(2rem, 12%, 8rem) !important; /* Raised anchor from 8% to 12% */
+  bottom: clamp(1.5rem, 10%, 7rem) !important; /* Lowered from 12% */
   top: auto !important;
   text-align: left;
   min-width: clamp(280px, 40vw, 450px);
@@ -295,7 +295,7 @@ h1, h2, h3 {
   background: rgba(139, 92, 246, 0.08); /* Static, clear base */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  padding: 2rem 2.5rem; /* Match the screenshot spacing */
+  padding: 1.4rem 2rem; /* Tightened padding for better balance */
   border-radius: 6px;
   border: 1px solid rgba(139, 92, 246, 0.4);
   cursor: default;
@@ -556,11 +556,11 @@ h1, h2, h3 {
   flex-shrink: 0;
 }
 
-.benefit-text h4 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--accent-violet);
-  margin-bottom: 0.25rem;
+.hud-node {
+  width: 8px;
+  height: 8px;
+  background: var(--accent-indigo);
+  margin-bottom: 0.6rem; /* Reduced from 1.5rem */
 }
 
 .benefit-text p {
@@ -1048,7 +1048,19 @@ h1, h2, h3 {
   
   .scroll-section { padding: 0 8%; justify-content: center; }
   
-  /* Prevent interaction with center model by re-anchoring to bottom */
+  /* Task List:
+  - [x] Implement responsive 3D scaling factor in `Visualizer3D.tsx`
+  - [x] Add fluid typography using `clamp()` for all headers and body text
+  - [x] Update `.pinned-content` for mobile/tablet layout shifts
+  - [x] Refine `.hud-pinned-left` and HUD cards for mobile clearance
+  - [x] Adjust Highlights section for vertical stacking on mobile
+  - [x] Fix TypeScript build errors in `Visualizer3D.tsx`
+  - [x] Refine typography hierarchy: Revert Hero caps, scale HUD titling and Section headers
+  - [x] Unify Highlights header size for mobile consistency
+  - [x] Re-balance HUD card internal spacing and block position
+  - [ ] Final visual verification across multiple viewport sizes
+  */
+  
   .pinned-content { 
     left: 50% !important; 
     margin-left: -45vw !important; /* Center without using transform */
@@ -1063,7 +1075,7 @@ h1, h2, h3 {
     left: 50% !important;
     margin-left: -45vw !important; /* Center without using transform */
     transform: none; /* Allow JS to override this */
-    bottom: 10% !important; /* Raised significantly from 3% to 10% */
+    bottom: 6% !important; /* Lowered from 10% to better balance with lowered cube */
     min-width: 90vw !important;
     text-align: center !important;
     padding: 0.5rem !important;
