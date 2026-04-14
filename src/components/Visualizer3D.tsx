@@ -772,8 +772,7 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
       {/* 0. Hero: 100vh, p=0 to 1 */}
       <div className="new-hero-banner">
         <div className="new-hero-content">
-          <span className="new-hero-sub">Launchpad Experiences</span>
-          <h1>Mixed Reality</h1>
+          <h1>AR Würfel</h1>
           <p>
             Wir transformieren digitale Interaktion in immersive physische Erlebnisse. 
             <strong>Das nächste Level</strong> von Consulting und Marketing beginnt hier.
