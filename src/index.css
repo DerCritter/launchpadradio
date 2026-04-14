@@ -488,7 +488,7 @@ h1, h2, h3 {
 }
 
 .section-title-alt {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(1.65rem, 5vw, 4rem); /* Unified base with other section headers */
   font-weight: 800;
   margin-bottom: 2rem;
   position: relative;
