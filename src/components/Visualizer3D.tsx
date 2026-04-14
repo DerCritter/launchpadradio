@@ -542,12 +542,11 @@ const FloatingCubes = ({ count = 80 }) => {
     cubeData.forEach((pData: { x: number, y: number, z: number, speed: number, rotSpeed: number }, i: number) => {
       // Linear motion based on p, starting from Section 4's reveal
       const scrollOffset = MathUtils.clamp((p - 8.5) / 11.5, 0, 1);
-      const currentZ = pData.z + (scrollOffset * 40 * pData.speed);
+      // Increased travel distance (multiplier 120) for "fast towards screen" effect
+      const currentZ = pData.z + (scrollOffset * 120 * pData.speed);
       
-      // Add noticeably stronger vertical oscillation (hover effect)
-      const oscillation = Math.sin(state.clock.elapsedTime * pData.speed) * 1.5;
-      
-      dummy.position.set(pData.x, pData.y + 5.5 + oscillation, currentZ); // Extremely raised + strong oscillation
+      // Removed oscillation as requested for a cleaner, high-speed linear feel
+      dummy.position.set(pData.x, pData.y + 5.5, currentZ); 
       dummy.rotation.set(
         state.clock.elapsedTime * pData.rotSpeed * 2,
         state.clock.elapsedTime * pData.rotSpeed * 2.5,
