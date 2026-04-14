@@ -182,6 +182,9 @@ h1, h2, h3 {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  /* Smooth transition gradient to next section */
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
 }
 
 .new-hero-frame {
