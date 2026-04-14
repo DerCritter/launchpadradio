@@ -96,7 +96,7 @@ const Avatar = ({ position }: { position: [number, number, number] }) => {
   useFrame(() => {
     if (!avatarRef.current) return;
     const t = scroll.offset;
-    const p = t * 17;
+    const p = t * 26;
     
     // Synced with Section 3 Pinned: starts at p=5.0 (shifted from 4.0)
     // It fades out exactly when the iPhone fades out (p=7.0)
@@ -186,7 +186,7 @@ const AnimatedCube = () => {
     if (!groupRef.current) return;
 
     const t = scroll.offset;
-    const p = t * 20; 
+    const p = t * 29; 
 
     // Transition stages mapped to pages
     // s1: Initial emergence zoom (starts p=0.3, duration 1.0)
@@ -289,8 +289,8 @@ const FloatingIcons = ({ topY }: { topY: number }) => {
         if (mesh.material) {
           const mat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshStandardMaterial;
           mat.transparent = true;
-          mat.roughness = 0.1;
-          mat.metalness = 0.9;
+          mat.roughness = 0.5;
+          mat.metalness = 0.2;
           // Removed lilac emissive to show natural model colors
           mat.emissive = new THREE.Color("#000000"); 
           mat.emissiveIntensity = 0;
@@ -302,7 +302,7 @@ const FloatingIcons = ({ topY }: { topY: number }) => {
   useFrame((state) => {
     if (!groupRef.current) return;
     const t = scroll.offset;
-    const p = t * 20;
+    const p = t * 26;
     
     // Appear with Ulm (s_fuse3 sync: starts p=11.5)
     const s_appear = MathUtils.clamp((p - 11.5) / 1.0, 0, 1);
@@ -362,7 +362,7 @@ const Home = ({ position }: { position: [number, number, number] }) => {
   useFrame(() => {
     if (!groupRef.current) return;
     const t = scroll.offset;
-    const p = t * 20;
+    const p = t * 26;
     
     // Sync appearance with the Isometric transition (starting p=7.5)
     // Appear when Cube begins tilt
@@ -394,28 +394,28 @@ useGLTF.preload('/home_1.glb');
 // Holographic Scan Line Effect
 const ScanLine = () => {
   const groupRef = useRef<THREE.Group>(null!);
+  const matRef = useRef<THREE.ShaderMaterial>(null!);
   const scroll = useScroll();
 
   useFrame(() => {
-    if (!groupRef.current) return;
+    if (!groupRef.current || !matRef.current) return;
     const t = scroll.offset;
-    const p = t * 20;
+    const p = t * 26;
     
-    // Scan triggers when the phone is settled (p > 4.4) and stops exactly when avatar STARTS spawning (p = 5.0)
-    const isActive = p > 4.4 && p < 5.0;
+    // Scan starts perfectly when phone finishes settling (p=4.5) and ends as avatar starts to appear (p=5.0)
+    const isActive = p > 4.5 && p < 5.0;
     
     if (isActive) {
       groupRef.current.visible = true;
       
-      // Even slower up-down scanning as requested (frequency reduced from 6 to 3)
-      const frequency = 3;
-      const pingPong = Math.abs(Math.sin(p * frequency));
+      // Perform a full sweep: top -> bottom -> top before the avatar appears
+      const progress = MathUtils.clamp((p - 4.5) / 0.5, 0, 1);
+      const cycleY = Math.cos(progress * Math.PI * 2) * 0.42;
+      groupRef.current.position.y = cycleY;
       
-      groupRef.current.position.y = MathUtils.lerp(0.48, -0.48, pingPong);
-      
-      // Face out as scan period ends
-      const fade = MathUtils.clamp((p - 4.4) * 8, 0, 1) * MathUtils.clamp((5.0 - p) * 20, 0, 1);
-      groupRef.current.scale.set(1, fade, 1);
+      // Smooth fade in/out at the boundaries of the scan window
+      const fade = MathUtils.clamp((p - 4.5) * 20, 0, 1) * MathUtils.clamp((5.0 - p) * 20, 0, 1);
+      matRef.current.uniforms.uOpacity.value = fade;
     } else {
       groupRef.current.visible = false;
     }
@@ -423,34 +423,38 @@ const ScanLine = () => {
 
   return (
     <group ref={groupRef} visible={false}>
-      {/* 1. Core Fine White Line */}
-      <mesh>
-        <planeGeometry args={[0.46, 0.003]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={1} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </mesh>
-      
-      {/* 2. Primary Internal Blur */}
-      <mesh position={[0, 0, -0.001]}>
-        <planeGeometry args={[0.465, 0.012]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.6} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </mesh>
-      
-      {/* 3. Secondary Medium Glow */}
-      <mesh position={[0, 0, -0.002]}>
-        <planeGeometry args={[0.47, 0.03]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.25} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </mesh>
-
-      {/* 4. Wide Atmospheric Blur */}
-      <mesh position={[0, 0, -0.003]}>
-        <planeGeometry args={[0.475, 0.08]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.1} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </mesh>
-
-      {/* 5. Edge Highlight Glow */}
-      <mesh position={[0, 0, -0.004]}>
-        <planeGeometry args={[0.48, 0.15]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.03} blending={THREE.AdditiveBlending} depthWrite={false} />
+      <mesh position={[0, 0, 0.1]} renderOrder={999}>
+        <planeGeometry args={[0.415, 0.08]} />
+        <shaderMaterial
+          ref={matRef}
+          transparent
+          depthTest={false}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          uniforms={{
+            uColor: { value: new THREE.Color("#8b5cf6") },
+            uOpacity: { value: 0.0 }
+          }}
+          vertexShader={`
+            varying vec2 vUv;
+            void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `}
+          fragmentShader={`
+            varying vec2 vUv;
+            uniform vec3 uColor;
+            uniform float uOpacity;
+            void main() {
+              float dist = abs(vUv.y - 0.5) * 2.0;
+              float aura = pow(1.0 - dist, 3.0);
+              float core = pow(1.0 - dist, 60.0);
+              vec3 finalColor = mix(uColor, vec3(1.0), core * 0.7);
+              gl_FragColor = vec4(finalColor, (aura * 0.5 + core * 0.5) * uOpacity);
+            }
+          `}
+        />
       </mesh>
     </group>
   );
@@ -463,7 +467,7 @@ const IphonePerspective = () => {
   useFrame(() => {
     if (!groupRef.current) return;
     const t = scroll.offset;
-    const p = t * 20;
+    const p = t * 26;
     const s_total = MathUtils.clamp((p - 2.0) / 2.5, 0, 1);
     
     // Visibility: disappear after Avatar spins (p=7.0)
@@ -517,7 +521,7 @@ const FloatingCubes = ({ count = 80 }) => {
 
   useFrame((state) => {
     const t = scroll.offset;
-    const p = t * 20;
+    const p = t * 26;
     // Fade in cubes exactly when Section 4 starts (p=8.5)
     // they stay until the end of the site (p=20)
     const intensity = MathUtils.clamp((p - 8.5) / 0.5, 0, 1);
@@ -566,11 +570,23 @@ const ScrollContent = () => {
   const gridRef = useRef<HTMLDivElement>(null!);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const videoCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const videoPinRef = useRef<HTMLDivElement>(null!);
+  const contactPinRef = useRef<HTMLDivElement>(null!);
+  const demoButtonRef = useRef<HTMLButtonElement>(null!);
+  const introCrypticRef = useRef<HTMLDivElement>(null!);
+  const contactCrypticRef = useRef<HTMLDivElement>(null!);
 
   useFrame(() => {
-    if (!pinRef.current || !pinRef2.current || !pinRef3.current || !gridRef.current) return;
+    if (!pinRef.current || !pinRef2.current || !pinRef3.current || !gridRef.current || !videoPinRef.current || !contactPinRef.current || !demoButtonRef.current || !introCrypticRef.current || !contactCrypticRef.current) return;
     const t = scroll.offset;
-    const p = t * 20;
+    const p = t * 26;
+    
+    // Introductory Cryptics (Only with the Cube emergence, NOT over Hero)
+    // Fades in starting at p=0.8, fully visible by p=1.2. Fades out by p=3.2.
+    const introOpacity = MathUtils.clamp((p - 0.8) / 0.4, 0, 1) * (1 - MathUtils.clamp((p - 3.2) / 0.4, 0, 1));
+    introCrypticRef.current.style.transform = `translateY(${p * 100}vh)`;
+    introCrypticRef.current.style.opacity = `${introOpacity}`;
+    introCrypticRef.current.style.pointerEvents = p > 3.5 || p < 0.5 ? 'none' : 'auto';
     
     // Section 2: Philosophy (p=2 to 4)
     const pinVal1 = MathUtils.clamp(p - 2, 0, 2) * 100;
@@ -610,8 +626,15 @@ const ScrollContent = () => {
       }
     });
 
-    // Highlight Video cards sequentially (p=17.2 to 18.2)
-    const videoProgress = MathUtils.clamp((p - 17.2) / 1.0, 0, 0.99);
+    // Section 5: Video Highlights (p=17.0 to 21.0 - Pinned for 4.0 pages)
+    const videoPinVal = MathUtils.clamp(p - 17.0, 0, 4.0) * 100;
+    const videoOpacity = MathUtils.clamp((p - 16.5) / 0.5, 0, 1) * (1 - MathUtils.clamp((p - 21.5) / 0.5, 0, 1));
+    videoPinRef.current.style.transform = `translateY(${videoPinVal}vh)`;
+    videoPinRef.current.style.opacity = `${videoOpacity}`;
+    videoPinRef.current.style.pointerEvents = p > 22.0 || p < 16.5 ? 'none' : 'auto';
+
+    // Highlight Video cards sequentially (p=17.0 to 21.0)
+    const videoProgress = MathUtils.clamp((p - 17.0) / 4.0, 0, 0.99);
     const activeVideoIndex = Math.floor(videoProgress * 3); // 3 items
     videoCardRefs.current.forEach((el, index) => {
       if (el) {
@@ -622,10 +645,39 @@ const ScrollContent = () => {
         }
       }
     });
+
+    // Section 6: Contact Pinning (p=22.0 to 25.0 - Pinned for 3.0 pages)
+    const contactPinVal = MathUtils.clamp(p - 22.0, 0, 3.0) * 100;
+    const contactOpacity = MathUtils.clamp((p - 21.5) / 0.5, 0, 1) * (1 - MathUtils.clamp((p - 26.0) / 0.5, 0, 1));
+    contactPinRef.current.style.transform = `translateY(${contactPinVal}vh)`;
+    contactPinRef.current.style.opacity = `${contactOpacity}`;
+    contactPinRef.current.style.pointerEvents = p > 26.5 || p < 21.5 ? 'none' : 'auto';
+
+    // Direct Scroll Highlight for CTA (p=22.8 to 26.0)
+    // Ties the intensity of the glow and scale directly to the scroll progress
+    const ctaIntensity = MathUtils.clamp((p - 22.8) / 0.8, 0, 1) * (1 - MathUtils.clamp((p - 25.5) / 0.5, 0, 1));
+    const scale = 1.0 + (ctaIntensity * 0.4); // Scales up to 1.4x (140%)
+    const glow = ctaIntensity * 80;
+    const brightness = 1.0 + (ctaIntensity * 0.4);
+    
+    demoButtonRef.current.style.transform = `scale(${scale})`;
+    demoButtonRef.current.style.filter = `brightness(${brightness})`;
+    demoButtonRef.current.style.boxShadow = `0 0 ${glow}px rgba(139, 92, 246, ${ctaIntensity * 0.9}), inset 0 0 ${ctaIntensity * 30}px rgba(255,255,255,0.5)`;
+    demoButtonRef.current.style.borderColor = `rgba(255, 255, 255, ${0.2 + ctaIntensity * 0.8})`;
+
+    // Subtle drift for contact cryptics (parallax effect)
+    const drift = (p - 22.0) * 40; // Drifts 40px per page
+    contactCrypticRef.current.style.transform = `translateY(${drift}px)`;
   });
 
   return (
     <Scroll html>
+      {/* Global Interface Layers */}
+      <div ref={introCrypticRef} style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 100, pointerEvents: 'none', willChange: 'transform, opacity' }}>
+        <CrypticDataStream />
+        <CrypticDataStream alignRight />
+      </div>
+
       {/* 0. Hero: 100vh, p=0 to 1 */}
       <div className="new-hero-banner">
         <div className="new-hero-content">
@@ -706,9 +758,8 @@ const ScrollContent = () => {
       {/* 4. Pin Spacer: 750vh (Endgame rotation sequence), p=8.5 to 16 */}
       <div style={{ height: '750vh' }} />
 
-      {/* 5. Video: 100vh, p=16.5 */}
-      <div style={{ height: '50vh' }} />
-      <section className="video-section">
+      {/* 5. Video: 100vh, p=17.0 to 21.0 */}
+      <section className="video-section" ref={videoPinRef}>
         <iframe 
           src="https://player.vimeo.com/video/1181282543?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
           frameBorder="0" 
@@ -741,21 +792,45 @@ const ScrollContent = () => {
         </div>
       </section>
 
-      {/* 6. Contact: 100vh, p=17 */}
-      <section className="scroll-section contact-section">
+      {/* 5. Pin Spacer: 400vh, corresponds to p=17.0 to 21.0 pin duration */}
+      <div style={{ height: '400vh' }} />
+
+      {/* 6. Contact: 100vh, p=22.0 to 25.0 */}
+      <section ref={contactPinRef} className="scroll-section contact-section" style={{ zIndex: 5, willChange: 'transform, opacity' }}>
         <div className="contact-grid"></div>
-        <CrypticDataStream />
-        <CrypticDataStream alignRight />
-        <div className="content-wrapper">
+        <div ref={contactCrypticRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+          <CrypticDataStream />
+          <CrypticDataStream alignRight />
+        </div>
+        <div className="content-wrapper" style={{ zIndex: 2, textAlign: 'center', width: '100%' }}>
           <span className="subheadline">Bereit für die próxima Dimension?</span>
-          <h2>Der Würfel als innovativer Einstiegspunkt in Ihre digitale Welt.</h2>
-          <button className="cta-button">
+          <h2 style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', fontWeight: 800, color: 'white', textShadow: '0 0 40px rgba(124, 58, 237, 0.5)', marginBottom: '2rem' }}>Der Würfel als innovativer Einstiegspunkt in Ihre digitale Welt.</h2>
+          <button ref={demoButtonRef} className="cta-button">
             Jetzt erleben o Demo anfragen
           </button>
         </div>
       </section>
 
-      <div style={{ height: '100vh' }} />
+      {/* 6. Contact Pin Spacer: 300vh */}
+      <div style={{ height: '300vh' }} />
+
+      {/* 7. Footer: immediate arrival at p=25.0+ */}
+      <footer className="tech-footer">
+        <div className="footer-content">
+          <div className="footer-brand">
+            <h3>Launchpad Experiences</h3>
+            <p>Digital strategy. Physical presence.</p>
+          </div>
+          <div className="footer-links">
+            <a href="#">Impressum</a>
+            <a href="#">Datenschutz</a>
+            <a href="#">Socials</a>
+          </div>
+          <div className="footer-copy">
+            &copy; 2024 Launchpad Experiences. All rights reserved.
+          </div>
+        </div>
+      </footer>
     </Scroll>
   );
 };
@@ -786,7 +861,7 @@ const Visualizer3D: React.FC = () => {
   return (
     <div className="visualizer-container">
       <Canvas shadows camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 2]}>
-        <ScrollControls pages={21} damping={0.1}>
+        <ScrollControls pages={27} damping={0.1}>
           <Scene />
           <ScrollContent />
           <ContactShadows 
