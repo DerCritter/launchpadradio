@@ -1154,7 +1154,7 @@ h1, h2, h3 {
   .hero-content { padding-top: 20vh; align-items: center; text-align: center; }
   .new-hero-banner { 
     background-size: cover;
-    background-position: center;
+    background-position: 30% center; /* Shifted left as requested */
     background-repeat: no-repeat;
     justify-content: center !important; /* Force center for mobile balance */
     padding-left: 0 !important;
