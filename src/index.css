@@ -1184,16 +1184,23 @@ h1, h2, h3 {
   }
   .benefits-list { width: 100%; align-items: center !important; }
   .benefit-item { 
-    width: 100% !important; /* Override fixed desktop width */
+    width: 100% !important; 
     max-width: 90vw; 
     padding: 1.5rem; 
-    min-height: auto; /* Reset min-height for mobile */
+    min-height: auto; 
     flex-direction: column !important; 
     align-items: center !important; 
     text-align: center !important; 
-    transform: none !important; 
+    /* Enable dramatic scaling on mobile too */
+    transform: scale(0.85); 
+    opacity: 0.3;
   }
-  .benefit-item:hover { transform: translateY(-5px) !important; }
+  
+  .benefit-item.active {
+    transform: scale(1.02) !important;
+    opacity: 1 !important;
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
+  }
   
   .uber-uns-content { padding: 2rem 1.2rem; margin: 0 1rem; }
   .uber-uns-content h2 { font-size: 2.2rem; }
