@@ -530,13 +530,15 @@ h1, h2, h3 {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(25px) saturate(200%);
   padding: 2.2rem 2.8rem;
-  width: 580px; /* Fixed width for unity */
-  min-height: 160px; /* Minimum height for unity */
+  width: 580px;
+  min-height: 160px;
   display: flex;
   align-items: center;
   position: relative;
-  overflow: hidden; /* For the shine sweep */
-  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  overflow: hidden;
+  opacity: 0.4; /* Lower base opacity for more contrast */
+  transform: scale(0.92); /* Smaller baseline as requested */
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .video-section .benefit-item::after {
@@ -557,15 +559,16 @@ h1, h2, h3 {
   pointer-events: none;
 }
 
-.video-section .benefit-item:hover::after {
+.video-section .benefit-item:hover::after, .video-section .benefit-item.active::after {
   left: 150%;
 }
 
 .video-section .benefit-item:hover, .video-section .benefit-item.active {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.4);
-  transform: translateX(20px) scale(1.02);
-  box-shadow: -20px 20px 60px rgba(139, 92, 246, 0.2);
+  transform: translateX(30px) scale(1.1); /* Dramatically larger and shifted */
+  opacity: 1; /* Fully visible when active */
+  box-shadow: -30px 30px 80px rgba(139, 92, 246, 0.3); /* Stronger glow */
 }
 
 .video-section .benefit-text h4 {
