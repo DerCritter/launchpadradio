@@ -186,7 +186,7 @@ const AnimatedCube = () => {
     if (!groupRef.current) return;
 
     const t = scroll.offset;
-    const p = t * 29; 
+    const p = t * 26; 
 
     // Transition stages mapped to pages
     // s1: Initial emergence zoom (starts p=0.3, duration 1.0)
@@ -576,6 +576,20 @@ const ScrollContent = () => {
   const introCrypticRef = useRef<HTMLDivElement>(null!);
   const contactCrypticRef = useRef<HTMLDivElement>(null!);
 
+  useEffect(() => {
+    const handleScrollTo = (e: any) => {
+      const targetPage = e.detail;
+      if (scroll.el) {
+        scroll.el.scrollTo({
+          top: targetPage * window.innerHeight,
+          behavior: 'smooth'
+        });
+      }
+    };
+    window.addEventListener('scroll-to', handleScrollTo);
+    return () => window.removeEventListener('scroll-to', handleScrollTo);
+  }, [scroll]);
+
   useFrame(() => {
     if (!pinRef.current || !pinRef2.current || !pinRef3.current || !gridRef.current || !videoPinRef.current || !contactPinRef.current || !demoButtonRef.current || !introCrypticRef.current || !contactCrypticRef.current) return;
     const t = scroll.offset;
@@ -805,7 +819,7 @@ const ScrollContent = () => {
         <div className="content-wrapper" style={{ zIndex: 2, textAlign: 'center', width: '100%' }}>
           <span className="subheadline">Bereit für die próxima Dimension?</span>
           <h2 style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', fontWeight: 800, color: 'white', textShadow: '0 0 40px rgba(124, 58, 237, 0.5)', marginBottom: '2rem' }}>Der Würfel als innovativer Einstiegspunkt in Ihre digitale Welt.</h2>
-          <button ref={demoButtonRef} className="cta-button">
+          <button ref={demoButtonRef} className="cta-button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))}>
             Jetzt erleben o Demo anfragen
           </button>
         </div>
@@ -814,20 +828,20 @@ const ScrollContent = () => {
       {/* 6. Contact Pin Spacer: 300vh */}
       <div style={{ height: '300vh' }} />
 
-      {/* 7. Footer: immediate arrival at p=25.0+ */}
+      {/* 7. Footer: immediate arrival at p=26.0+ */}
       <footer className="tech-footer">
         <div className="footer-content">
           <div className="footer-brand">
-            <h3>Launchpad Experiences</h3>
-            <p>Digital strategy. Physical presence.</p>
+            <h3>ImmBlend GmbH</h3>
+            <p>Deutschlands führende AR VR Agentur.</p>
           </div>
           <div className="footer-links">
-            <a href="#">Impressum</a>
-            <a href="#">Datenschutz</a>
-            <a href="#">Socials</a>
+            <a href="https://www.immblend.de/policies/impressum" target="_blank" rel="noreferrer">Impressum</a>
+            <a href="https://www.immblend.de/policies/datenschutz" target="_blank" rel="noreferrer">Datenschutz</a>
+            <a href="https://www.immblend.de" target="_blank" rel="noreferrer">Website</a>
           </div>
           <div className="footer-copy">
-            &copy; 2024 Launchpad Experiences. All rights reserved.
+            &copy; 2024 ImmBlend GmbH. All rights reserved.
           </div>
         </div>
       </footer>

@@ -727,6 +727,169 @@ h1, h2, h3 {
   text-align: center;
 }
 
+/* Modal contact form */
+.contact-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(15px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.contact-modal {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(139, 92, 246, 0.1);
+  border-radius: 1.5rem;
+  padding: 3rem;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  transform: translateY(20px);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  to { transform: translateY(0); }
+}
+
+.contact-modal h2 {
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.contact-modal p {
+  color: #94a3b8;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: white;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group input, .form-group textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 0.8rem 1rem;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-violet);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.modal-submit {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+}
+
+/* Uber Us Section */
+.uber-uns-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 5;
+}
+
+.uber-uns-content {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  padding: 4rem;
+  border-radius: 2rem;
+  max-width: 800px;
+  margin: 0 2rem;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+}
+
+.uber-uns-content h2 {
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #e0eaff, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.uber-uns-content p {
+  color: #cbd5e1;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.uber-uns-content strong {
+  color: white;
+}
+
 @media (max-width: 768px) {
   .navbar { padding: 1.5rem 5%; }
   .nav-links { display: none; }
