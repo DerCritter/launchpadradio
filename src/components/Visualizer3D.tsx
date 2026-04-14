@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { ScrollControls, useScroll, Scroll, ContactShadows, useTexture, useGLTF, Environment, useAnimations } from '@react-three/drei';
+import { ScrollControls, useScroll, Scroll, ContactShadows, useTexture, useGLTF, Environment, useAnimations, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { MathUtils } from 'three';
 
@@ -575,6 +575,40 @@ const FloatingCubes = ({ count = 80 }) => {
   );
 };
 
+// Background Cryptics (Behind the Cube)
+const IntroCryptic3D = () => {
+  const scroll = useScroll();
+  const groupRef = useRef<THREE.Group>(null!);
+  const introCrypticRef = useRef<HTMLDivElement>(null!);
+
+  useFrame(() => {
+    if (!groupRef.current) return;
+    const t = scroll.offset;
+    const p = t * 26;
+    
+    // Initial emergence timing: p=0.8 to 3.2
+    const introOpacity = MathUtils.clamp((p - 0.8) / 0.4, 0, 1) * (1 - MathUtils.clamp((p - 3.2) / 0.4, 0, 1));
+    groupRef.current.position.y = -p * 1.5; // Drift vertically in 3D space
+    groupRef.current.visible = introOpacity > 0.001;
+    
+    if (introCrypticRef.current) {
+      introCrypticRef.current.style.opacity = `${introOpacity}`;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[0, 0, -2.5]}>
+      <Html transform distanceFactor={5}>
+        <div ref={introCrypticRef} className="intro-cryptics" style={{ opacity: 0 }}>
+          <div className="cryptic-line">SCANNING SECTOR: VII</div>
+          <div className="cryptic-line">INIT_SEQ_v2.0</div>
+          <div className="cryptic-line">GRID_LOAD: 88%</div>
+        </div>
+      </Html>
+    </group>
+  );
+};
+
 const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }) => {
   const scroll = useScroll();
   const pinRef = useRef<HTMLDivElement>(null!);
@@ -586,6 +620,7 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
   const contactPinRef = useRef<HTMLDivElement>(null!);
   const demoButtonRef = useRef<HTMLButtonElement>(null!);
   const introCrypticRef = useRef<HTMLDivElement>(null!);
+  const introForegroundRef = useRef<HTMLDivElement>(null!);
   const contactCrypticRef = useRef<HTMLDivElement>(null!);
   const prevScrollOffset = useRef(0);
   const navbarVisible = useRef(true);
@@ -605,7 +640,7 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
   }, [scroll]);
 
   useFrame(() => {
-    if (!pinRef.current || !pinRef2.current || !pinRef3.current || !gridRef.current || !videoPinRef.current || !contactPinRef.current || !demoButtonRef.current || !introCrypticRef.current || !contactCrypticRef.current) return;
+    if (!pinRef.current || !pinRef2.current || !pinRef3.current || !gridRef.current || !videoPinRef.current || !contactPinRef.current || !demoButtonRef.current || !introCrypticRef.current || !introForegroundRef.current || !contactCrypticRef.current) return;
     const t = scroll.offset;
     const p = t * 26;
 
@@ -625,7 +660,10 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
     const introOpacity = MathUtils.clamp((p - 0.8) / 0.4, 0, 1) * (1 - MathUtils.clamp((p - 3.2) / 0.4, 0, 1));
     introCrypticRef.current.style.transform = `translateY(${p * 100}vh)`;
     introCrypticRef.current.style.opacity = `${introOpacity}`;
-    introCrypticRef.current.style.pointerEvents = p > 3.5 || p < 0.5 ? 'none' : 'auto';
+    
+    // Sync foreground lines
+    introForegroundRef.current.style.transform = `translateY(${p * 100}vh)`;
+    introForegroundRef.current.style.opacity = `${introOpacity}`;
     
     // Section 2: Philosophy (p=2 to 4)
     const pinVal1 = MathUtils.clamp(p - 2, 0, 2) * 100;
@@ -718,10 +756,15 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
 
   return (
     <Scroll html>
-      {/* Global Interface Layers */}
+      {/* Global Interface Layers (Front) */}
       <div ref={introCrypticRef} style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 100, pointerEvents: 'none', willChange: 'transform, opacity' }}>
         <CrypticDataStream />
         <CrypticDataStream alignRight />
+      </div>
+
+      <div ref={introForegroundRef} className="intro-cryptics" style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 110, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="cryptic-line">ID: 0x4F2A-881</div>
+        <div className="cryptic-line">STATUS: EMERGING</div>
       </div>
 
       {/* 0. Hero: 100vh, p=0 to 1 */}
@@ -893,6 +936,7 @@ const Scene = () => {
       
       <IphonePerspective />
       <AnimatedCube />
+      <IntroCryptic3D />
       <FloatingCubes />
       <Environment preset="city" />
     </>
