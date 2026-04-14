@@ -993,12 +993,12 @@ h1, h2, h3 {
 }
 
 .new-hero-content h1 {
-  font-size: clamp(3.5rem, 14vw, 9.5rem);
+  font-size: clamp(3rem, 10vw, 7.5rem); /* Reduced giant scale */
   font-weight: 800;
-  margin-bottom: 2.5rem;
-  line-height: 0.9;
-  letter-spacing: -0.05em;
-  text-transform: uppercase;
+  margin-bottom: 2rem;
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  text-transform: none; /* Removed uppercase */
 }
 
 .new-hero-content p {
@@ -1018,7 +1018,7 @@ h1, h2, h3 {
 }
 
 .pinned-content h2 {
-  font-size: clamp(2rem, 6vw, 2.8rem);
+  font-size: clamp(1.65rem, 5vw, 2.8rem);
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: var(--text-primary);
@@ -1097,7 +1097,7 @@ h1, h2, h3 {
   .uber-uns-content h2 { font-size: 2.2rem; }
   
   .hud-header h2 { 
-    font-size: 1.1rem !important; 
+    font-size: 1.35rem !important; /* Scaled up from too small 1.1rem */
     letter-spacing: -0.04em !important;
     white-space: normal;
     text-align: center;
