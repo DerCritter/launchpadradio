@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 
+/* 
+  IMMBLEND HIGH-FIDELITY HUD SYSTEM 
+  STATUS: READY FOR PRODUCTION v3.2
+  DEPLOY_TRIGGER: 2026-04-14_21:32
+*/
+
 :root {
   --canvas-bg: #f8faff;
   --accent-indigo: #7c3aed; /* More intense Lilac */
