@@ -64,15 +64,14 @@ h1, h2, h3 {
 }
 
 .nav-logo {
-  font-family: 'Inter', sans-serif;
-  font-weight: 800;
-  font-size: 1.5rem;
-  letter-spacing: -0.02em;
-  color: var(--accent-indigo);
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .nav-links {
   display: flex;
+  align-items: center;
   gap: 3rem;
 }
 
@@ -150,13 +149,15 @@ h1, h2, h3 {
   justify-content: flex-start;
   padding: 0 10%;
   color: var(--text-primary);
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
 }
 
 .new-hero-banner::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 60%, transparent 100%);
+  background: linear-gradient(to right, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
   z-index: 1;
 }
 

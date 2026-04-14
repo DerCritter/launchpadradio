@@ -266,8 +266,8 @@ const AnimatedCube = () => {
       <group ref={ulmRef} visible={false}>
         <primitive object={ulmScene} />
       </group>
-      {/* 0.01 micro-offset is enough with polygonOffset to prevent Z-fighting */}
-      <Avatar position={[0, topY + 0.01, 0]} />
+      {/* Subtle offset to ensure feet make contact with cube surface */}
+      <Avatar position={[0, topY - 0.01, 0]} />
       <Home position={[0, topY + 0.01, 0]} />
       <FloatingIcons topY={topY} />
     </group>
