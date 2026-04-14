@@ -744,7 +744,7 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
     // Direct Scroll Highlight for CTA (p=22.8 to 26.0)
     const ctaIntensity = MathUtils.clamp((p - 22.8) / 0.8, 0, 1) * (1 - MathUtils.clamp((p - 25.5) / 0.5, 0, 1));
     // Reduce scale intensity on mobile to prevent viewport overflow
-    const maxScaleFactor = isMobile ? 0.2 : 0.4;
+    const maxScaleFactor = isMobile ? 0.1 : 0.4;
     const scale = 1.0 + (ctaIntensity * maxScaleFactor);
     const glow = ctaIntensity * 80;
     const brightness = 1.0 + (ctaIntensity * 0.4);

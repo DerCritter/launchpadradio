@@ -1156,9 +1156,9 @@ h1, h2, h3 {
   }
   
   .cta-button {
-    padding: 0.8rem 2rem;
-    font-size: 1rem;
-    width: 90vw;
+    padding: 0.8rem 1.5rem; /* Reduced horizontal padding */
+    font-size: 0.95rem;
+    width: 80vw; /* Reduced from 90vw to give room for scaling */
     margin: 0 auto;
   }
   
