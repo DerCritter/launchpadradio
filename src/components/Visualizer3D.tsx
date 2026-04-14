@@ -769,9 +769,8 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
 
         <div className="scroll-section">
           <div ref={pinRef3} className="content-wrapper pinned-content hud-pinned-left">
-            <div className="hud-header">
+          <div className="hud-header">
             <h2>Anwendungsmöglichkeiten</h2>
-            <div className="hud-line"></div>
           </div>
           <div className="hud-cards">
             <div className="hud-card" ref={el => cardRefs.current[0] = el}>

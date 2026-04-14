@@ -281,25 +281,6 @@ h1, h2, h3 {
   display: block;
 }
 
-.hud-line {
-  height: 1px;
-  width: 100%;
-  background: linear-gradient(90deg, var(--accent-indigo), rgba(124, 58, 237, 0.2) 80%, transparent);
-  margin-top: 10px;
-  position: relative;
-}
-
-.hud-line::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: -2px;
-  width: 5px;
-  height: 5px;
-  background: var(--accent-indigo);
-  box-shadow: 0 0 10px var(--accent-indigo);
-  border-radius: 50%;
-}
 
 .hud-cards {
   display: grid;
