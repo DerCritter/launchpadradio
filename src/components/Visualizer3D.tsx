@@ -763,7 +763,6 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
 
       <div ref={introForegroundRef} className="intro-cryptics" style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 110, pointerEvents: 'none', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         <div className="cryptic-line">ID: 0x4F2A-881</div>
-        <div className="cryptic-line">STATUS: EMERGING</div>
       </div>
 
       {/* 0. Hero: 100vh, p=0 to 1 */}
