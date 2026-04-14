@@ -534,18 +534,6 @@ h1, h2, h3 {
   transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.video-section .benefit-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: var(--accent-violet);
-  box-shadow: 0 0 20px var(--accent-violet);
-  opacity: 0.6;
-}
-
 .video-section .benefit-item::after {
   content: '';
   position: absolute;
@@ -573,11 +561,6 @@ h1, h2, h3 {
   border-color: rgba(255, 255, 255, 0.4);
   transform: translateX(20px) scale(1.02);
   box-shadow: -20px 20px 60px rgba(139, 92, 246, 0.2);
-}
-
-.video-section .benefit-item:hover::before {
-  opacity: 1;
-  width: 6px;
 }
 
 .video-section .benefit-text h4 {
