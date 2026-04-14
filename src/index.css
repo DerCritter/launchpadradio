@@ -259,7 +259,7 @@ h1, h2, h3 {
 .hud-pinned-left {
   left: clamp(1rem, 3%, 3rem) !important;
   right: auto !important;
-  bottom: clamp(1rem, 8%, 5rem) !important; 
+  bottom: clamp(2rem, 12%, 8rem) !important; /* Raised anchor from 8% to 12% */
   top: auto !important;
   text-align: left;
   min-width: clamp(280px, 40vw, 450px);
@@ -286,7 +286,7 @@ h1, h2, h3 {
   display: grid;
   grid-template-areas: "card";
   justify-content: flex-start; /* Changed to left-aligned */
-  margin-top: 2rem;
+  margin-top: 0.75rem; /* Tightened gap from 2.5rem total */
   width: 100%;
 }
 
@@ -1063,18 +1063,19 @@ h1, h2, h3 {
     left: 50% !important;
     margin-left: -45vw !important; /* Center without using transform */
     transform: none; /* Allow JS to override this */
-    bottom: 3% !important;
+    bottom: 10% !important; /* Raised significantly from 3% to 10% */
     min-width: 90vw !important;
     text-align: center !important;
     padding: 0.5rem !important;
   }
   
-  .hud-header { display: flex; flex-direction: column; align-items: center; }
+  .hud-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 0; }
   .hud-cards { 
     gap: 0.6rem; 
     align-items: center; 
     width: 100%; 
     justify-content: center !important; 
+    margin-top: 1rem !important;
   }
   .hud-card { 
     padding: 1.2rem; 

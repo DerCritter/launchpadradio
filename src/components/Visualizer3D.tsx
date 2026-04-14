@@ -215,11 +215,11 @@ const AnimatedCube = () => {
     
     // Position logic: starts near iPhone base (-0.3), centers to 0.0 during iso transition
     const baseCubeY = MathUtils.lerp(0, -0.3, s2);
-    const isoCenteredY = MathUtils.lerp(0, 0.3, s_iso); 
+    const isoCenteredY = MathUtils.lerp(0, 0.05, s_iso); // Lowered from 0.3
     groupRef.current.position.z = MathUtils.lerp(0, 2.55, s2);
     groupRef.current.position.x = 0;
-    // On mobile, nudge the cube slightly higher to avoid overlap with bottom text cards
-    const mobileOffset = isMobile ? 0.35 : 0;
+    // On mobile, nudge the cube SLIGHTLY higher to avoid overlap, but keep it centered
+    const mobileOffset = isMobile ? 0.2 : 0; 
     groupRef.current.position.y = baseCubeY + isoCenteredY + mobileOffset;
 
     // Rotation logic
