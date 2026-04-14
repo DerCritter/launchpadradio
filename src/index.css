@@ -528,7 +528,10 @@ h1, h2, h3 {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(25px) saturate(200%);
   padding: 2.2rem 2.8rem;
-  max-width: 650px;
+  width: 580px; /* Fixed width for unity */
+  min-height: 160px; /* Minimum height for unity */
+  display: flex;
+  align-items: center;
   position: relative;
   overflow: hidden; /* For the shine sweep */
   transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
