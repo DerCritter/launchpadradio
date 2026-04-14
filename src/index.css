@@ -1068,21 +1068,25 @@ h1, h2, h3 {
   .nav-cta { padding: 0.6rem 1.2rem; font-size: 0.8rem; }
   
   .hero-content { padding-top: 20vh; align-items: center; text-align: center; }
-  .new-hero-content { padding-top: 15vh; align-items: center; text-align: center; }
+  .new-hero-banner { 
+    background-size: 85% auto; /* Zoomed out to see the central motif better */
+    background-position: center 40%;
+    background-repeat: no-repeat;
+  }
+  
+  .new-hero-content { 
+    padding: 0 1.5rem; 
+    margin-top: 25vh; /* Push content down to show motif */
+  }
   
   .scroll-section { padding: 0 8%; justify-content: center; }
   
   /* Task List:
   - [x] Implement responsive 3D scaling factor in `Visualizer3D.tsx`
   - [x] Add fluid typography using `clamp()` for all headers and body text
-  - [x] Update `.pinned-content` for mobile/tablet layout shifts
-  - [x] Refine `.hud-pinned-left` and HUD cards for mobile clearance
-  - [x] Adjust Highlights section for vertical stacking on mobile
-  - [x] Fix TypeScript build errors in `Visualizer3D.tsx`
-  - [x] Refine typography hierarchy: Revert Hero caps, scale HUD titling and Section headers
-  - [x] Unify Highlights header size for mobile consistency
-  - [x] Re-balance HUD card internal spacing and block position
-  - [ ] Final visual verification across multiple viewport sizes
+  - [x] Increase 3D icons (FloatingCubes) height and oscillation amplitude
+  - [x] Optimize Hero Banner image zoom/size for mobile view
+  - [x] Final visual verification across multiple viewport sizes
   */
   
   .pinned-content { 

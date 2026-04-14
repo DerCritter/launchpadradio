@@ -544,10 +544,10 @@ const FloatingCubes = ({ count = 80 }) => {
       const scrollOffset = MathUtils.clamp((p - 8.5) / 11.5, 0, 1);
       const currentZ = pData.z + (scrollOffset * 40 * pData.speed);
       
-      // Add noticeable vertical oscillation (hover effect)
-      const oscillation = Math.sin(state.clock.elapsedTime * pData.speed) * 0.8;
+      // Add noticeably stronger vertical oscillation (hover effect)
+      const oscillation = Math.sin(state.clock.elapsedTime * pData.speed) * 1.5;
       
-      dummy.position.set(pData.x, pData.y + 3.5 + oscillation, currentZ); // Raised + oscillation
+      dummy.position.set(pData.x, pData.y + 5.5 + oscillation, currentZ); // Extremely raised + strong oscillation
       dummy.rotation.set(
         state.clock.elapsedTime * pData.rotSpeed * 2,
         state.clock.elapsedTime * pData.rotSpeed * 2.5,
