@@ -758,7 +758,6 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
     <Scroll html>
       {/* Global Interface Layers (Front) */}
       <div ref={introCrypticRef} style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 100, pointerEvents: 'none', willChange: 'transform, opacity' }}>
-        <CrypticDataStream />
         <CrypticDataStream alignRight />
       </div>
 
