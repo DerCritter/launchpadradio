@@ -182,7 +182,8 @@ h1, h2, h3 {
   image-rendering: -webkit-optimize-contrast;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Moved to left as requested */
+  padding-left: 5%; /* Side anchor */
   overflow: hidden;
   /* Smooth transition gradient to next section */
   mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
@@ -227,15 +228,15 @@ h1, h2, h3 {
 .new-hero-content {
   position: relative;
   z-index: 2;
-  max-width: 600px;
-  /* Premium Glassmorphism: only blurs behind the text */
-  background: rgba(0, 0, 0, 0.15); 
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  max-width: 580px;
+  /* Reduced blur and increased transparency for a 'lighter' tech look */
+  background: rgba(0, 0, 0, 0.08); 
+  backdrop-filter: blur(5px) saturate(160%);
+  -webkit-backdrop-filter: blur(5px) saturate(160%);
   padding: 3rem;
   border-radius: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
 .new-hero-content h1 {
