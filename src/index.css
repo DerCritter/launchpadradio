@@ -150,6 +150,26 @@ h1, h2, h3 {
   -webkit-text-fill-color: transparent;
 }
 
+.intro-cryptics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-family: 'Space Mono', monospace;
+  z-index: 100;
+}
+
+.cryptic-line {
+  color: #c4b5fd; /* Light lilac */
+  font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+  letter-spacing: 0.25em;
+  text-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
 .new-hero-banner {
   position: relative;
   width: 100vw;
