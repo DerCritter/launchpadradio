@@ -777,16 +777,11 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
           <div className="hero-corner br" />
           
           <div className="new-hero-content">
-            <span className="hero-meta-tag">[ PROJECT_ID: IMM_AR_CUBE ]</span>
             <h1>AR Würfel</h1>
             <p>
               Wir transformieren digitale Interaktion in immersive physische Erlebnisse. 
               <strong>Das nächste Level</strong> von Consulting und Marketing beginnt hier.
             </p>
-            <div className="hero-status-bar">
-              <span className="status-dot"></span>
-              <span className="status-text">HUD_MODE: ELEGANT_v3.2 // AUTH_OK</span>
-            </div>
           </div>
         </div>
       </div>
