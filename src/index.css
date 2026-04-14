@@ -274,13 +274,11 @@ h1, h2, h3 {
 }
 
 .hud-header h2 {
-  font-size: clamp(0.8rem, 1.6vw, 1.15rem); /* Even smaller for a technical HUD feel */
-  letter-spacing: 0.05em; /* Added slight tracking for better legibility at small scale */
+  font-size: clamp(1rem, 2.2vw, 1.4rem);
+  letter-spacing: -0.01em;
   color: var(--text-primary);
-  text-transform: uppercase; /* More robotic/technical vibe */
   white-space: nowrap;
   display: block;
-  opacity: 0.8;
 }
 
 
@@ -1097,6 +1095,13 @@ h1, h2, h3 {
   
   .uber-uns-content { padding: 2rem 1.2rem; margin: 0 1rem; }
   .uber-uns-content h2 { font-size: 2.2rem; }
+  
+  .hud-header h2 { 
+    font-size: 1.1rem !important; 
+    letter-spacing: -0.04em !important;
+    white-space: normal;
+    text-align: center;
+  }
   
   .footer-content { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
   .footer-links { justify-content: center; }
