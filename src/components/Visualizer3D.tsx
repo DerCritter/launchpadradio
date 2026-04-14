@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useEffect, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ScrollControls, useScroll, Scroll, ContactShadows, useTexture, useGLTF, Environment, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 import { MathUtils } from 'three';
@@ -122,6 +122,10 @@ const AnimatedCube = () => {
   const ulmRef = useRef<THREE.Group>(null!);
   const scroll = useScroll();
   
+  const { viewport } = useThree();
+  const isMobile = viewport.width < 5; // Simple check for mobile aspect
+  const responsiveScale = isMobile ? 0.7 : 1.0;
+  
   const { scene: immScene } = useGLTF('/cube_immblend.glb');
   const { scene: baseScene } = useGLTF('/cube_finx_2.glb');
   const { scene: fesScene } = useGLTF('/cube_fes.glb');
@@ -207,14 +211,16 @@ const AnimatedCube = () => {
       ? MathUtils.lerp(0.1, 0.85, s1) 
       : MathUtils.lerp(0.85, 0.22, s2); // Dramatic shrink to fix inside iPhone screen
     
-    groupRef.current.scale.setScalar(baseScale * visibilityScale);
+    groupRef.current.scale.setScalar(baseScale * visibilityScale * responsiveScale);
     
     // Position logic: starts near iPhone base (-0.3), centers to 0.0 during iso transition
     const baseCubeY = MathUtils.lerp(0, -0.3, s2);
     const isoCenteredY = MathUtils.lerp(0, 0.3, s_iso); 
     groupRef.current.position.z = MathUtils.lerp(0, 2.55, s2);
     groupRef.current.position.x = 0;
-    groupRef.current.position.y = baseCubeY + isoCenteredY;
+    // On mobile, nudge the cube slightly higher to avoid overlap with bottom text cards
+    const mobileOffset = isMobile ? 0.35 : 0;
+    groupRef.current.position.y = baseCubeY + isoCenteredY + mobileOffset;
 
     // Rotation logic
     const rotX1 = MathUtils.lerp(0, Math.PI * 0.5, s1);
@@ -468,6 +474,8 @@ const ScanLine = () => {
 const IphonePerspective = () => {
   const groupRef = useRef<THREE.Group>(null!);
   const scroll = useScroll();
+  const { viewport } = useThree();
+  const isMobile = viewport.width < 5;
 
   useFrame(() => {
     if (!groupRef.current) return;
@@ -480,9 +488,9 @@ const IphonePerspective = () => {
     const visibilityScale = MathUtils.clamp((9.8 - p) / 0.4, 0, 1) * fade;
 
     groupRef.current.position.x = 0;
-    groupRef.current.position.y = MathUtils.lerp(0, -0.1, s_total); // Re-centered to match original layout
+    groupRef.current.position.y = MathUtils.lerp(0, isMobile ? 0.2 : -0.1, s_total); 
     groupRef.current.position.z = MathUtils.lerp(7, 2.5, s_total);
-    const targetScale = MathUtils.lerp(15, 1.58, s_total) * visibilityScale;
+    const targetScale = MathUtils.lerp(isMobile ? 12 : 15, isMobile ? 1.4 : 1.58, s_total) * visibilityScale;
     groupRef.current.scale.setScalar(targetScale);
     groupRef.current.visible = visibilityScale > 0.001;
   });
