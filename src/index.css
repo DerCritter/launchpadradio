@@ -201,22 +201,23 @@ h1, h2, h3 {
 }
 
 .new-hero-content h1 {
-  font-size: clamp(2.5rem, 8vw, 4rem); /* Unified typographic scale */
-  font-weight: 800;
-  margin-bottom: 2rem;
-  letter-spacing: -0.04em;
-  color: white; /* Unified white for high contrast */
-  line-height: 1.05;
-  text-shadow: 0 0 30px rgba(196, 181, 253, 0.4); /* HUD Neon effect */
+  font-size: clamp(2.2rem, 5vw, 3.2rem); /* Apple aesthetic: elegant and proportionate */
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+  color: white;
+  line-height: 1.1;
+  text-shadow: 0 0 25px rgba(196, 181, 253, 0.25);
 }
 
 .new-hero-content p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85); /* Slightly softer for elegance */
   margin-bottom: 2.5rem;
   font-weight: 400;
-  max-width: min(45vw, 500px);
+  max-width: 480px;
+  letter-spacing: 0.01em;
 }
 
 .new-hero-sub {

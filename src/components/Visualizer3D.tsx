@@ -215,7 +215,7 @@ const AnimatedCube = () => {
     
     // Position logic: starts near iPhone base (-0.3), centers to 0.0 during iso transition
     const baseCubeY = MathUtils.lerp(0, -0.3, s2);
-    const isoCenteredY = MathUtils.lerp(0, 0.05, s_iso); // Lowered from 0.3
+    const isoCenteredY = MathUtils.lerp(0, 0.35, s_iso); // Raised back to 0.35 for desktop centering
     groupRef.current.position.z = MathUtils.lerp(0, 2.55, s2);
     groupRef.current.position.x = 0;
     // On mobile, nudge the cube SLIGHTLY higher to avoid overlap, but keep it centered
