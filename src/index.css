@@ -201,13 +201,13 @@ h1, h2, h3 {
 }
 
 .new-hero-content h1 {
-  font-size: clamp(2.2rem, 5vw, 3.2rem); /* Apple aesthetic: elegant and proportionate */
+  font-size: clamp(2rem, 6vw, 2.8rem); /* Unified with Section H2s */
   font-weight: 700;
   margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
-  color: white;
+  letter-spacing: -0.03em;
+  color: var(--text-primary); /* Unified black for consistency */
   line-height: 1.1;
-  text-shadow: 0 0 25px rgba(196, 181, 253, 0.25);
+  text-shadow: none; /* Removed neon for uniform aesthetic */
 }
 
 .new-hero-content p {
