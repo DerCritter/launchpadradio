@@ -610,6 +610,8 @@ const IntroCryptic3D = () => {
 };
 
 const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }) => {
+  const { viewport } = useThree();
+  const isMobile = viewport.width < 5;
   const scroll = useScroll();
   const pinRef = useRef<HTMLDivElement>(null!);
   const pinRef2 = useRef<HTMLDivElement>(null!);
@@ -738,9 +740,10 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
     contactPinRef.current.style.pointerEvents = p > 26.5 || p < 21.5 ? 'none' : 'auto';
 
     // Direct Scroll Highlight for CTA (p=22.8 to 26.0)
-    // Ties the intensity of the glow and scale directly to the scroll progress
     const ctaIntensity = MathUtils.clamp((p - 22.8) / 0.8, 0, 1) * (1 - MathUtils.clamp((p - 25.5) / 0.5, 0, 1));
-    const scale = 1.0 + (ctaIntensity * 0.4); // Scales up to 1.4x (140%)
+    // Reduce scale intensity on mobile to prevent viewport overflow
+    const maxScaleFactor = isMobile ? 0.2 : 0.4;
+    const scale = 1.0 + (ctaIntensity * maxScaleFactor);
     const glow = ctaIntensity * 80;
     const brightness = 1.0 + (ctaIntensity * 0.4);
     
