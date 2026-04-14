@@ -1107,8 +1107,8 @@ h1, h2, h3 {
   
   .hero-content { padding-top: 20vh; align-items: center; text-align: center; }
   .new-hero-banner { 
-    background-size: 85% auto; /* Zoomed out to see the central motif better */
-    background-position: center 40%;
+    background-size: cover; /* Back to full coverage for immersive mobile view */
+    background-position: center;
     background-repeat: no-repeat;
   }
   
