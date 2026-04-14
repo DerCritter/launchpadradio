@@ -1070,15 +1070,18 @@ h1, h2, h3 {
   /* Prevent interaction with center model by re-anchoring to bottom */
   .pinned-content { 
     left: 50% !important; 
-    transform: translateX(-50%) !important;
+    margin-left: -45vw !important; /* Center without using transform */
+    transform: none; /* Allow JS to override this */
     bottom: 5% !important;
     text-align: center !important;
+    width: 90vw !important;
     max-width: 90vw;
   }
   
   .hud-pinned-left {
     left: 50% !important;
-    transform: translateX(-50%) !important;
+    margin-left: -45vw !important; /* Center without using transform */
+    transform: none; /* Allow JS to override this */
     bottom: 3% !important;
     min-width: 90vw !important;
     text-align: center !important;
