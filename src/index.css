@@ -274,11 +274,13 @@ h1, h2, h3 {
 }
 
 .hud-header h2 {
-  font-size: clamp(1rem, 2.2vw, 1.4rem);
-  letter-spacing: -0.01em;
+  font-size: clamp(0.8rem, 1.6vw, 1.15rem); /* Even smaller for a technical HUD feel */
+  letter-spacing: 0.05em; /* Added slight tracking for better legibility at small scale */
   color: var(--text-primary);
+  text-transform: uppercase; /* More robotic/technical vibe */
   white-space: nowrap;
   display: block;
+  opacity: 0.8;
 }
 
 
