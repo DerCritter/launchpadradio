@@ -427,7 +427,7 @@ h1, h2, h3 {
 }
 
 .tech-panel-frame .corner.top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-.tech-panel-frame .corner.top-right { top: -2px; right: -2px; border-left: none; border-top: none; }
+.tech-panel-frame .corner.top-right { top: -2px; right: -2px; border-left: none; border-bottom: none; }
 .tech-panel-frame .corner.bottom-left { bottom: -2px; left: -2px; border-right: none; border-top: none; }
 .tech-panel-frame .corner.bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 
