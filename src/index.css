@@ -479,11 +479,11 @@ h1, h2, h3 {
   height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center; /* Centered horizontally */
+  justify-content: flex-start; /* Left aligned on Desktop */
   padding: 0 10%;
   background: black;
   overflow: hidden;
-  text-align: center; /* Center all text */
+  text-align: left; /* Left aligned on Desktop */
 }
 
 .video-background {
@@ -532,8 +532,8 @@ h1, h2, h3 {
 .video-section .benefit-item:hover, .video-section .benefit-item.active {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-5px) scale(1.02); /* Symmetrical hover */
-  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+  transform: translateX(15px); /* Lateral hover for desktop */
+  box-shadow: -10px 10px 30px rgba(139, 92, 246, 0.15);
 }
 
 .video-section .benefit-text h4 {
@@ -547,7 +547,7 @@ h1, h2, h3 {
 .benefits-list {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center items horizontally */
+  align-items: flex-start; /* Left aligned on Desktop */
   gap: 1.5rem;
   position: relative;
   z-index: 2;
@@ -556,10 +556,9 @@ h1, h2, h3 {
 
 .benefit-item {
   display: flex;
-  flex-direction: column; /* Stack vertically for centering */
-  align-items: center;
-  text-align: center;
-  gap: 0.75rem;
+  align-items: center; /* Horizontal flow for desktop */
+  text-align: left;
+  gap: 1.5rem;
   padding: 1.5rem;
   background: white;
   border: 1px solid rgba(139, 92, 246, 0.05);
@@ -1128,9 +1127,23 @@ h1, h2, h3 {
   .hud-node { position: relative; margin: 0 auto 0.8rem auto; left: auto; top: auto; }
   
   /* Section specific overrides for better clearance */
-  .video-section { padding: 0 5%; align-items: flex-end; padding-bottom: 5vh; }
-  .benefits-list { width: 100%; align-items: center; }
-  .benefit-item { max-width: 90vw; padding: 1rem; transform: none !important; }
+  .video-section { 
+    padding: 0 5%; 
+    align-items: flex-end; 
+    padding-bottom: 5vh; 
+    justify-content: center !important; 
+    text-align: center !important; 
+  }
+  .benefits-list { width: 100%; align-items: center !important; }
+  .benefit-item { 
+    max-width: 90vw; 
+    padding: 1rem; 
+    flex-direction: column !important; 
+    align-items: center !important; 
+    text-align: center !important; 
+    transform: none !important; 
+  }
+  .benefit-item:hover { transform: translateY(-5px) !important; }
   
   .uber-uns-content { padding: 2rem 1.2rem; margin: 0 1rem; }
   .uber-uns-content h2 { font-size: 2.2rem; }
