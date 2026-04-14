@@ -776,7 +776,7 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
           <h1>Mixed Reality</h1>
           <p>
             Wir transformieren digitale Interaktion in immersive physische Erlebnisse. 
-            <strong>Das nächste Level</strong> von Consulting und Marketing comienza aquí.
+            <strong>Das nächste Level</strong> von Consulting und Marketing beginnt hier.
           </p>
         </div>
       </div>
@@ -890,10 +890,10 @@ const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }
           <CrypticDataStream alignRight />
         </div>
         <div className="content-wrapper" style={{ zIndex: 2, textAlign: 'center', width: '100%' }}>
-          <span className="subheadline">Bereit für die próxima Dimension?</span>
+          <span className="subheadline">Bereit für die nächste Dimension?</span>
           <h2 style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', fontWeight: 800, color: 'white', textShadow: '0 0 40px rgba(124, 58, 237, 0.5)', marginBottom: '2rem' }}>Der Würfel als innovativer Einstiegspunkt in Ihre digitale Welt.</h2>
           <button ref={demoButtonRef} className="cta-button" onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal'))}>
-            Jetzt erleben o Demo anfragen
+            Jetzt erleben oder Demo anfragen
           </button>
         </div>
       </section>
