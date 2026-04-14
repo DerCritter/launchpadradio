@@ -1153,16 +1153,18 @@ h1, h2, h3 {
   
   .hero-content { padding-top: 20vh; align-items: center; text-align: center; }
   .new-hero-banner { 
-    background-size: cover; /* Back to full coverage for immersive mobile view */
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    justify-content: center !important; /* Force center for mobile balance */
+    padding-left: 0 !important;
   }
   
   .new-hero-frame {
-    width: 95%;
+    width: 92%;
     max-width: none;
     height: auto;
-    padding: 2.5rem 1.2rem;
+    padding: 1.5rem 0; /* Reduced vertical padding */
     border: none;
     align-items: center;
     text-align: center;
@@ -1171,14 +1173,18 @@ h1, h2, h3 {
   .hero-corner { display: none; }
   
   .new-hero-content { 
-    padding: 0;
-    margin-top: 15vh; /* Balanced for centered motif */
+    padding: 2rem 1.2rem !important; /* Slimmer card on mobile */
+    margin-top: 5vh; 
+    width: 100%;
+    max-width: 90vw;
     display: flex;
     flex-direction: column;
     align-items: center;
+    backdrop-filter: blur(8px) saturate(160%); /* Slightly more blur for mobile legibility */
   }
 
-  .new-hero-content p { margin: 1.5rem auto 2.5rem auto; }
+  .new-hero-content h1 { font-size: 2.2rem !important; margin-bottom: 1rem; }
+  .new-hero-content p { margin: 1rem auto 2rem auto; font-size: 0.95rem; line-height: 1.5; }
   .hero-status-bar { justify-content: center; }
   
   .scroll-section { padding: 0 8%; justify-content: center; }
