@@ -59,8 +59,15 @@ h1, h2, h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2.5rem 5%;
+  padding: 1.8rem 5%;
   z-index: 100;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, background-color 0.4s ease;
+}
+
+.navbar--hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .nav-logo {
@@ -69,10 +76,16 @@ h1, h2, h3 {
   height: 100%;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 3rem;
+  gap: 3.5rem;
 }
 
 .nav-link {
@@ -141,7 +154,7 @@ h1, h2, h3 {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background-image: url('https://i.postimg.cc/9QxxN9GT/hero.jpg');
+  background-image: url('https://i.postimg.cc/Bv2FtYhn/hero-banner-hq.jpg');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -236,18 +249,17 @@ h1, h2, h3 {
   max-width: 400px;
 }
 
-.hud-pinned-right {
-  left: auto;
-  right: 6% !important;
+.hud-pinned-left {
+  left: 3% !important; /* Tighter anchoring to the left corner */
+  right: auto !important;
+  bottom: 8% !important; 
   top: auto !important;
-  bottom: 8% !important;
-  text-align: right;
-  max-width: min(35vw, 550px);
+  text-align: left;
+  min-width: 320px; /* Reduced to fit better on mobile */
+  max-width: 480px; /* Slimmer profile to avoid center overlap */
   z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }
+
 
 .hud-header {
   margin-bottom: 0.5rem;
@@ -265,7 +277,7 @@ h1, h2, h3 {
 .hud-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.2) 80%, rgba(0,0,0,0.5));
+  background: linear-gradient(90deg, var(--accent-indigo), rgba(124, 58, 237, 0.2) 80%, transparent);
   margin-top: 10px;
   position: relative;
 }
@@ -273,93 +285,164 @@ h1, h2, h3 {
 .hud-line::after {
   content: '';
   position: absolute;
-  right: 0;
+  left: 0;
   top: -2px;
   width: 5px;
   height: 5px;
-  background: var(--text-primary);
+  background: var(--accent-indigo);
+  box-shadow: 0 0 10px var(--accent-indigo);
   border-radius: 50%;
 }
 
 .hud-cards {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.2rem;
+  grid-template-areas: "card";
+  justify-content: flex-start; /* Changed to left-aligned */
+  margin-top: 2rem;
+  width: 100%;
 }
 
 .hud-card {
-  position: relative;
-  padding: 1.2rem 1.8rem;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-right: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  grid-area: card;
+  background: rgba(139, 92, 246, 0.08); /* Static, clear base */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 2rem 2.5rem; /* Match the screenshot spacing */
+  border-radius: 6px;
+  border: 1px solid rgba(139, 92, 246, 0.4);
   cursor: default;
-  overflow: hidden;
-  text-align: right;
-  opacity: 0.6;
-  transform: scale(0.95);
+  overflow: visible;
+  text-align: left;
+  opacity: 0;
+  transform: none;
+  /* transition removed for smooth scroll-driven opacity */
+  pointer-events: none;
 }
+
+.hud-card::before, .hud-card::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(139, 92, 246, 0.8);
+  pointer-events: none;
+}
+
+.hud-card::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.hud-card::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 
 .hud-node {
   position: absolute;
-  left: 0;
+  left: -2px;
   top: 50%;
   transform: translateY(-50%);
   width: 3px;
-  height: 0%;
-  background: var(--text-primary);
-  transition: height 0.3s ease, box-shadow 0.3s ease;
+  height: 45%;
+  background: #8b5cf6;
 }
 
-.hud-card:hover, .hud-card.active {
-  transform: translateX(-15px) scale(1);
-  background: rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.9);
-  border-right: 4px solid var(--text-primary);
-  box-shadow: -10px 15px 40px rgba(0, 0, 0, 0.08);
-  opacity: 1;
-}
-
-.hud-card:hover .hud-node, .hud-card.active .hud-node {
-  height: 40%;
+.hud-card.active, .hud-card:hover {
+  /* Class logic removed in favor of direct scroll-driven opacity */
+  pointer-events: auto;
 }
 
 .hud-card h3 {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.3rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  transition: color 0.3s ease;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #8b5cf6;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none; /* Removed glow to match screenshot */
 }
 
 .hud-card p {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  line-height: 1.45;
+  font-size: 0.9rem;
+  color: rgba(139, 92, 246, 0.7);
+  line-height: 1.4;
   margin: 0;
+  text-shadow: none;
+}
+
+.tech-panel-container {
+  position: absolute;
+  inset: 0;
+  width: 100vw !important;
+  height: calc(100vh - 5.5rem) !important;
+  max-width: none !important;
+  left: 0 !important;
+  top: 5.5rem !important;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transition: top 0.45s cubic-bezier(0.16, 1, 0.3, 1), height 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tech-panel--expanded {
+  top: 0 !important;
+  height: 100vh !important;
 }
 
 .tech-grid {
   position: absolute;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
-  background-size: 50px 50px;
+  /* HIGHER VISIBILITY atmospheric grid - temporarily more intense to ensure user can see it */
   background-image: 
-    linear-gradient(to right, rgba(124, 58, 237, 0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(124, 58, 237, 0.15) 1px, transparent 1px);
-  mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 90%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 90%);
-  pointer-events: none;
-  z-index: 0;
+    linear-gradient(rgba(124, 58, 237, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 58, 237, 0.25) 1px, transparent 1px),
+    linear-gradient(rgba(124, 58, 237, 0.1) 0.8px, transparent 0.8px),
+    linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0.8px, transparent 0.8px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-position: center center;
+  background-repeat: repeat;
+  /* Blend mask */
+  mask-image: radial-gradient(ellipse at center, black 60%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 60%, transparent 100%);
+  opacity: 1;
 }
+
+/* Sci-Fi Panel Frame (Marco) - MADE MORE BOLD */
+.tech-panel-frame {
+  position: absolute;
+  inset: 1.5rem;
+  border: 1.5px solid rgba(139, 92, 246, 0.3);
+  box-shadow: inset 0 0 30px rgba(139, 92, 246, 0.1);
+  pointer-events: none;
+}
+
+.tech-panel-frame .corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(139, 92, 246, 0.8);
+}
+
+.tech-panel-frame .corner.top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.tech-panel-frame .corner.top-right { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+.tech-panel-frame .corner.bottom-left { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+.tech-panel-frame .corner.bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+.panel-side {
+  position: absolute;
+  background: rgba(139, 92, 246, 0.2);
+}
+
+.panel-side.left { left: -2px; top: 20%; width: 2px; height: 60%; }
+.panel-side.right { right: -2px; top: 20%; width: 2px; height: 60%; }
+
+.tech-data-point {
+  position: absolute;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent-violet);
+  opacity: 0.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tech-data-point.top-left { top: -20px; left: 0; }
+.tech-data-point.bottom-right { bottom: -20px; right: 0; }
 
 .video-background {
   pointer-events: none;
@@ -564,7 +647,7 @@ h1, h2, h3 {
   gap: 2rem;
   position: relative;
   z-index: 10;
-  background: radial-gradient(circle at center, #1E1B4B 0%, #000000 100%);
+  background: #000000;
   overflow: hidden;
 }
 
@@ -656,8 +739,25 @@ h1, h2, h3 {
   box-shadow: 0 0 40px rgba(124,58,237,0.8), inset 0 0 15px rgba(255,255,255,0.4);
 }
 
+.hud-scanner-frame {
+  position: absolute;
+  inset: 2rem;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  pointer-events: none;
+  z-index: 5;
+}
 
-/* Scroll highlighting for CTA is handled via direct JS style injection in Visualizer3D.tsx */
+.hud-scanner-frame::before, .hud-scanner-frame::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--accent-violet);
+}
+
+.hud-scanner-frame::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.hud-scanner-frame::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
 @keyframes pulse-gentle {
   0% { transform: scale(1); filter: brightness(1); }
   50% { transform: scale(1.02); filter: brightness(1.1); }
@@ -896,6 +996,13 @@ h1, h2, h3 {
   .nav-links { display: none; }
   .hero-content h1 { font-size: 3.5rem; }
   .scroll-section { padding: 0 5%; }
+  .hud-pinned-left { 
+    left: 2% !important; 
+    bottom: 5% !important; 
+    min-width: 280px; 
+    padding: 1rem;
+  }
+  .hud-card { padding: 1.5rem 1.8rem; }
   .footer-content { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
   .footer-links { justify-content: center; }
 }

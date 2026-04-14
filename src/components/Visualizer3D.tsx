@@ -266,8 +266,8 @@ const AnimatedCube = () => {
       <group ref={ulmRef} visible={false}>
         <primitive object={ulmScene} />
       </group>
-      {/* Subtle offset to ensure feet make contact with cube surface */}
-      <Avatar position={[0, topY - 0.01, 0]} />
+      {/* Force contact with cube surface by lowering slightly more */}
+      <Avatar position={[0, topY - 0.04, 0]} />
       <Home position={[0, topY + 0.01, 0]} />
       <FloatingIcons topY={topY} />
     </group>
@@ -432,8 +432,11 @@ const ScanLine = () => {
           depthWrite={false}
           blending={THREE.AdditiveBlending}
           uniforms={{
-            uColor: { value: new THREE.Color("#8b5cf6") },
-            uOpacity: { value: 0.0 }
+            uTime: { value: 0 },
+            uProgress: { value: 0 },
+            uOpacity: { value: 0 },
+            uColor: { value: new THREE.Color('#8b5cf6') },
+            uIntensity: { value: 2.5 } // Higher intensity for Bloom
           }}
           vertexShader={`
             varying vec2 vUv;
@@ -446,11 +449,13 @@ const ScanLine = () => {
             varying vec2 vUv;
             uniform vec3 uColor;
             uniform float uOpacity;
+            uniform float uIntensity;
             void main() {
               float dist = abs(vUv.y - 0.5) * 2.0;
               float aura = pow(1.0 - dist, 3.0);
               float core = pow(1.0 - dist, 60.0);
-              vec3 finalColor = mix(uColor, vec3(1.0), core * 0.7);
+              vec3 baseColor = mix(uColor, vec3(1.0), core * 0.7);
+              vec3 finalColor = baseColor * uIntensity;
               gl_FragColor = vec4(finalColor, (aura * 0.5 + core * 0.5) * uOpacity);
             }
           `}
@@ -556,18 +561,17 @@ const FloatingCubes = ({ count = 80 }) => {
         transparent 
         opacity={0.35} 
         emissive="#8b5cf6"
-        emissiveIntensity={0.6}
+        emissiveIntensity={1.2}
       />
     </instancedMesh>
   );
 };
 
-const ScrollContent = () => {
+const ScrollContent = ({ gridRef }: { gridRef: React.RefObject<HTMLDivElement> }) => {
   const scroll = useScroll();
   const pinRef = useRef<HTMLDivElement>(null!);
   const pinRef2 = useRef<HTMLDivElement>(null!);
   const pinRef3 = useRef<HTMLDivElement>(null!);
-  const gridRef = useRef<HTMLDivElement>(null!);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const videoCardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const videoPinRef = useRef<HTMLDivElement>(null!);
@@ -575,6 +579,8 @@ const ScrollContent = () => {
   const demoButtonRef = useRef<HTMLButtonElement>(null!);
   const introCrypticRef = useRef<HTMLDivElement>(null!);
   const contactCrypticRef = useRef<HTMLDivElement>(null!);
+  const prevScrollOffset = useRef(0);
+  const navbarVisible = useRef(true);
 
   useEffect(() => {
     const handleScrollTo = (e: any) => {
@@ -594,6 +600,17 @@ const ScrollContent = () => {
     if (!pinRef.current || !pinRef2.current || !pinRef3.current || !gridRef.current || !videoPinRef.current || !contactPinRef.current || !demoButtonRef.current || !introCrypticRef.current || !contactCrypticRef.current) return;
     const t = scroll.offset;
     const p = t * 26;
+
+    // Detect Scroll Direction for Navbar Visibility
+    const delta = t - prevScrollOffset.current;
+    if (Math.abs(delta) > 0.001) {
+      const shouldBeVisible = delta < 0 || t < 0.02; // Visible if scrolling up or at the very top
+      if (shouldBeVisible !== navbarVisible.current) {
+        navbarVisible.current = shouldBeVisible;
+        window.dispatchEvent(new CustomEvent('navbar-visibility', { detail: { visible: shouldBeVisible } }));
+      }
+    }
+    prevScrollOffset.current = t;
     
     // Introductory Cryptics (Only with the Cube emergence, NOT over Hero)
     // Fades in starting at p=0.8, fully visible by p=1.2. Fades out by p=3.2.
@@ -623,19 +640,26 @@ const ScrollContent = () => {
     pinRef3.current.style.opacity = `${opacity3}`;
     pinRef3.current.style.pointerEvents = p > 17.0 || p < 8.2 ? 'none' : 'auto';
     
-    // Tech grid sync
-    gridRef.current.style.transform = `translateY(${pinVal3}vh)`;
+    // Tech grid sync (Inside fixed container, only needs opacity)
     gridRef.current.style.opacity = `${opacity3}`;
 
     // Highlight HUD cards sequentially based on the p=8.5 to 16.0 timeframe
-    const cardProgress = MathUtils.clamp((p - 8.5) / 7.5, 0, 0.99);
-    const activeIndex = Math.floor(cardProgress * 4);
+    const cardProgress = MathUtils.clamp((p - 8.5) / 7.5, 0, 1);
     cardRefs.current.forEach((el, index) => {
       if (el) {
-        if (index === activeIndex) {
-          el.classList.add('active');
-        } else {
-          el.classList.remove('active');
+        // Calculate smooth scroll-driven opacity (triangular pulse)
+        // Each card peaks at its center point and fades in/out gradually
+        const peak = (index + 0.5) / 4;
+        const dist = Math.abs(cardProgress - peak);
+        const cardOpacity = MathUtils.clamp(1 - dist * 8, 0, 1); // "8" controls the width of the fade window
+        
+        el.style.opacity = `${cardOpacity}`;
+        el.style.pointerEvents = cardOpacity > 0.1 ? 'auto' : 'none';
+        
+        // Also animate the node height based on individual opacity
+        const node = el.querySelector('.hud-node') as HTMLElement;
+        if (node) {
+          node.style.height = `${cardOpacity * 45}%`;
         }
       }
     });
@@ -735,13 +759,9 @@ const ScrollContent = () => {
       {/* 3.5 Gap to Section 4: 50vh (adjusts entry to exactly p=8.5) */}
       <div style={{ height: '50vh' }} />
 
-      {/* 4. Anwendung: 100vh, p=8.5 */}
-      <div className="scroll-section">
-        {/* Tecnological Background Grid */}
-        <div ref={gridRef} className="tech-grid pinned-content" />
-
-        <div ref={pinRef3} className="content-wrapper pinned-content hud-pinned-right">
-          <div className="hud-header">
+        <div className="scroll-section">
+          <div ref={pinRef3} className="content-wrapper pinned-content hud-pinned-left">
+            <div className="hud-header">
             <h2>Anwendungsmöglichkeiten</h2>
             <div className="hud-line"></div>
           </div>
@@ -781,6 +801,7 @@ const ScrollContent = () => {
           className="video-background"
           title="cube_1"
         />
+        <div className="video-overlay"></div>
         <div className="content-wrapper" style={{ zIndex: 2 }}>
           <h2 className="section-title-alt">Highlights: Warum AR Würfel?</h2>
           <div className="benefits-list">
@@ -872,12 +893,37 @@ const Scene = () => {
 };
 
 const Visualizer3D: React.FC = () => {
+  const gridRef = useRef<HTMLDivElement>(null!);
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+
+  useEffect(() => {
+    const handleVisibility = (e: any) => {
+      setIsNavbarVisible(e.detail.visible);
+    };
+    window.addEventListener('navbar-visibility', handleVisibility);
+    return () => window.removeEventListener('navbar-visibility', handleVisibility);
+  }, []);
+
   return (
     <div className="visualizer-container">
+      <div className={`tech-panel-container ${!isNavbarVisible ? 'tech-panel--expanded' : ''}`} ref={gridRef}>
+        <div className="tech-grid" />
+        <div className="tech-panel-frame">
+          <div className="corner top-left" />
+          <div className="corner top-right" />
+          <div className="corner bottom-left" />
+          <div className="corner bottom-right" />
+          <div className="panel-side left" />
+          <div className="panel-side right" />
+          <div className="tech-data-point top-left">SCN_TYPE: AR_CUBE</div>
+          <div className="tech-data-point bottom-right">IMM_SYS_v2.0</div>
+        </div>
+      </div>
+      
       <Canvas shadows camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 2]}>
         <ScrollControls pages={27} damping={0.1}>
           <Scene />
-          <ScrollContent />
+          <ScrollContent gridRef={gridRef} />
           <ContactShadows 
             position={[0, -1.2, 0]} 
             opacity={0.15} 
