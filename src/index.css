@@ -178,6 +178,8 @@ h1, h2, h3 {
   background-size: cover;
   background-position: 35% center; /* Shifted left to balance content */
   background-repeat: no-repeat;
+  image-rendering: high-quality;
+  image-rendering: -webkit-optimize-contrast;
   display: flex;
   align-items: center;
   justify-content: center;
